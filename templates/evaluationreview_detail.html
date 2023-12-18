@@ -1,0 +1,14 @@
+<h2>Evaluation Review Details</h2>
+    <div class="review-details">
+        <p><strong>Applicant:</strong> {{ review.applicant_id }}</p>
+        <p><strong>Score:</strong> {{ review.score }}</p>
+        <p><strong>Review Date:</strong> {{ review.review_date }}</p>
+        <p><strong>Comments:</strong> {{ review.comments }}</p>
+        <p><strong>Communication Skills:</strong> {{ review.get_communication_skills_display }}</p>
+        <p><strong>Facial Disclosure:</strong> {{ review.get_facial_disclosure_display }}</p>
+        <p><strong>Eye Contact:</strong> {{ review.get_eye_contact_display }}</p>
+        <p><strong>Posture:</strong> {{ review.get_posture_display }}</p>
+        <p><strong>Self Control:</strong> {{ review.get_self_control_display }}</p>
+        <p><strong>Personality:</strong> {{ review.get_personality_display }}</p>
+        <p><strong>Handling Question 1:</strong> {{ review.get_handling_question_1_display }}</p>
+        <p><strong>Handling Question 2:</strong> {{ review.get_handling_question_2_display }}</p>
