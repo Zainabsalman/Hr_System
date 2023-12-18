@@ -66,4 +66,4 @@ jobs:
         with:
           app-name: 'HrSystem'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_91A8C7B9233E41818C2D341D9D46C9A7 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_42CCB7DB1CF740C0BA644106984AE4CF }}
