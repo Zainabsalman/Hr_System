@@ -23,6 +23,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'css/all.css' %}">
+    <style>
+      .custom-rounded {
+    border-radius: 15px; /* Adjust as needed */
+      }
+    </style>
   </head>
   <body class="h-100">
   
@@ -191,7 +196,7 @@
             <div class="row">
               <div class="col-lg-8 mx-auto mt-4">
                 <!-- Edit User Details Card -->
-                <div class="card card-small edit-user-details mb-4">
+                <div class="card card-small overflow-hidden mb-4">
                    
                    <div class="card-header p-0">
                     <div class="edit-user-details__bg">
@@ -200,20 +205,32 @@
                       <label class="edit-user-details__change-background">
                       --> 
                     </div>
-                    <div class="card-body p-0">
-                     
-                        
-                        <h1>{{ opening.job_name }}</h1>
-                        <p>Department: {{ opening.department_name }}</p>
-                        <p>Date Posted: {{ opening.date_posted }}</p>
-                        <p>Deadline: {{ opening.deadline }}</p>
-                        <p>Description: {{ opening.description }}</p>
-  
-                          </form>
+                   
+                      <div class="card-header">
+                          <h2 class="mb-0">{{ opening.job_name }}</h2>
                       </div>
-                  </div>
+                      <div class="card-body">
+                          <div class="form-group">
+                              <label>Department:</label>
+                              <input type="text" class="form-control" value="{{ opening.department_name }}" disabled>
+                          </div>
+                          <div class="form-group">
+                              <label>Date Posted:</label>
+                              <input type="text" class="form-control" value="{{ opening.date_posted }}" disabled>
+                          </div>
+                          <div class="form-group">
+                              <label>Deadline:</label>
+                              <input type="text" class="form-control" value="{{ opening.deadline }}" disabled>
+                          </div>
+                          <div class="form-group">
+                              <label>Description:</label>
+                              <textarea class="form-control" rows="3" disabled>{{ opening.description }}</textarea>
+                          </div>
+                      </div>
+                
+                    
                   
-                </div>
+              
                 <!-- End Edit User Details Card -->
               </div>
             </div>

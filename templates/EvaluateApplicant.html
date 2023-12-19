@@ -12,7 +12,7 @@
     <!-- End Google Tag Manager -->
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>User Profile</title>
+    <title>Evaluate Applicant</title>
     <meta name="description" content="A premium collection of beautiful hand-crafted Bootstrap 4 admin dashboard templates and dozens of custom components built for data-driven applications.">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
@@ -185,9 +185,9 @@
               </button>
             </div>
           </div>-->
-          <div class="main-content-container container-fluid px-4">
+          <div class="container-fluid px-4">
             <div class="row">
-              <div class="col-lg-8 mx-auto mt-4">
+              <div class="col-lg-11 mx-auto mt-4">
                 <!-- Edit User Details Card -->
                 <div class="card card-small edit-user-details mb-4">
                   <div class="card-header p-0">
@@ -197,139 +197,204 @@
                       --> 
                     </div>
                   </div>
-                  <div class="card-body p-0">
-                    </div>
-                    <form action="#" class="py-4">
-                      <div class="form-row mx-4">
-                        <div class="col mb-3">
-                          <h5 class="form-text m-0"> Evaluation Form</h5>
-                          <p class="form-text text-muted m-0">Record Evaluation for {{ applicant.name}}</p>
+                  <div class="card-body">
+                    <div class="py-4">
+                        <div class="form-row mx-4">
+                            <div class="col mb-3">
+                                <h5 class="form-text m-0">Evaluation Form</h5>
+                                <p class="form-text text-muted m-0">Record Evaluation for {{ applicant.name }}</p>
+                            </div>
                         </div>
+                      
+                        <div class="form-row mx-4">
+                          <!-- Employee Information Form -->
+                          <div class="col-lg-8">
+                              <div class="form-row">
+                                  <div class="form-group col-md-6">
+                                      <label for="firstName">Name:</label>
+                                      <input type="text" class="form-control" id="firstName" value="{{ applicant.name }}" disabled>
+                                  </div>
+                                  <div class="form-group col-md-6">
+                                      <label for="email">Email:</label>
+                                      <input type="text" class="form-control" id="email" value="{{ applicant.email }}" disabled>
+                                  </div>
+                                  <div class="form-group col-md-6">
+                                      <label for="dob">DOB:</label>
+                                      <input type="text" class="form-control" id="dob" value="{{ applicant.dob }}" disabled>
+                                  </div>
+                                  <div class="form-group col-md-6">
+                                      <label for="mobileNumber">Mobile Number:</label>
+                                      <input type="text" class="form-control" id="mobileNumber" value="{{ applicant.mobile_number }}" disabled>
+                                  </div>
+                              </div>
+                          </div>
+              
+                          <!-- Profile Picture -->
+                          <div class="col-lg-4">
+                              <label for="userProfilePicture" class="text-center w-100 mb-4">Profile Picture</label>
+                              <div class="edit-user-details__avatar m-auto">
+                                  <img src="{% static 'img/user_avatar.png' %}" alt="User Avatar">
+                                  <label class="edit-user-details__avatar__change">
+                                      <input type="file" id="userProfilePicture" class="d-none">
+                                  </label>
+                              </div>
+                          </div>
                       </div>
-                      <div class="form-row mx-4">
-                        <div class="col-lg-8">
-                          <div class="form-row">
-                            <div class="form-row mx-4">
-                                <div class="col-lg-8">
-                                  <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                      <label for="firstName"> Name:</label>
-                                      <input type="text" class="form-control" id="firstName" value="{{ applicant.name }} "disabled>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="lastName">Email</label>
-                                        <input type="text" class="form-control" id="lastName" value=" {{ applicant.mobile_number }}" disabled>
-                                      </div>
-                                      <div class="form-group col-md-6">
-                                        <label for="lastName">DOB</label>
-                                        <input type="text" class="form-control" id="lastName" value=" {{ applicant.dob }}" disabled>
-                                      </div>
-                                      <div class="form-group col-md-6">
-                                        <label for="lastName">MobileNumber</label>
-                                        <input type="text" class="form-control" id="lastName" value=" {{ applicant.mobile_number }}" disabled>
-                                      </div>
-
-                                      <div class="col-lg-4" style="margin-left: 350px; margin-top: -170px;">
-                                        <label for="userProfilePicture" class="text-center w-100 mb-4">Profile Picture</label>
-                                        <div class="edit-user-details__avatar m-auto">
-                                          <img src="{% static 'img/user_avatar.png' %}" style="margin-left: 50px; margin-top: -17px;" alt="User Avatar">
-                                          <label class="edit-user-details__avatar__change">
-                                          <input type="file" id="userProfilePicture" class="d-none">
-                                          </label>
-                                        </div>
-                                      </div>
-                                    </form>
-                              <div>
-
+                  </div>
+              </div>
+<hr> <!-- Horizontal line as a separator -->
+<div class="form-row mx-4">
                               <form method="post" action="{% url 'EvaluateApplicant' applicant_id=applicant.pk  %}">
                                 {% csrf_token %}
-                                <!-- Score -->
-                                
+                                 <!-- Score Slider and Review Date -->
+                                 <div class="form-row">
+                                  <div class="form-group col-md-6">
+                                      <label for="id_score">Score:</label>
+                                      <input type="range" class="form-control-range" id="id_score" name="score" min="1" max="10" required>
+                                      <small id="scoreHelp" class="form-text text-muted">
+                                          Score Value: <span id="scoreValue">5</span>
+                                      </small>
+                                  </div>
+                                  <div class="form-group col-md-6">
+                                      <label for="id_review_date">Review Date:</label>
+                                      <input type="date" class="form-control" id="id_review_date" name="review_date" required>
+                                  </div>
+                              </div>
+                          
                             
-                                <label for="id_score">Score:</label>
-                                <input type="number" id="id_score" name="score" required>
-                                <br><br>
+                                  <!-- Comments -->
+                                  <div class="form-group col-md-12">
+                                    <label for="id_comments">Comments:</label>
+                                    <textarea class="form-control" id="id_comments" name="comments" rows="3" required></textarea>
+                                </div>
+                                <div class="form-row">
+                                  <!-- Communication Skills -->
+                                  <div class="form-group col-md-4">
+                                      <label>Communication Skills:</label>
+                                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                          <label class="btn btn-outline-secondary {% if form.communication_skills.value == '1' %}active{% endif %}">
+                                              <input type="radio" name="communication_skills" id="communication1" value="1" {% if form.communication_skills.value == '1' %}checked{% endif %}> Poor
+                                          </label>
+                                          <label class="btn btn-outline-secondary {% if form.communication_skills.value == '2' %}active{% endif %}">
+                                              <input type="radio" name="communication_skills" id="communication2" value="2" {% if form.communication_skills.value == '2' %}checked{% endif %}> Good 
+                                          </label>
+                                          <label class="btn btn-outline-secondary {% if form.communication_skills.value == '3' %}active{% endif %}">
+                                              <input type="radio" name="communication_skills" id="communication3" value="3" {% if form.communication_skills.value == '3' %}checked{% endif %}> Perfect
+                                          </label>
+                                      </div>
+                                  </div>
+                              
+                                  <div class="form-group col-md-4">
+                                    <label>Facial Disclosure:</label>
+                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                        <label class="btn btn-outline-secondary {% if form.facial_disclosure.value == '0' %}active{% endif %}">
+                                            <input type="radio" name="facial_disclosure" id="facial_disclosure0" value="0" {% if form.facial_disclosure.value == '0' %}checked{% endif %}> Hides expressions
+                                        </label>
+                                        <label class="btn btn-outline-secondary {% if form.facial_disclosure.value == '1' %}active{% endif %}">
+                                            <input type="radio" name="facial_disclosure" id="facial_disclosure1" value="1" {% if form.facial_disclosure.value == '1' %}checked{% endif %}> Reveals expressions
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row mx-6">
+                              <!-- Eye Contact -->
+                              <div class="form-group col-md-4">
+                                  <label>Eye Contact:</label>
+                                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                      <label class="btn btn-outline-secondary {% if form.eye_contact.value == '0' %}active{% endif %}">
+                                          <input type="radio" name="eye_contact" id="eye_contact0" value="0" {% if form.eye_contact.value == '0' %}checked{% endif %}> Doesn’t keep eye contact
+                                      </label>
+                                      <label class="btn btn-outline-secondary {% if form.eye_contact.value == '1' %}active{% endif %}">
+                                          <input type="radio" name="eye_contact" id="eye_contact1" value="1" {% if form.eye_contact.value == '1' %}checked{% endif %}> Normal
+                                      </label>
+                                  </div>
+                              </div>
+                          
+                              <!-- Posture -->
+                              <div class="form-group col-md-4">
+                                  <label>Posture:</label>
+                                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                      <label class="btn btn-outline-secondary {% if form.posture.value == '0' %}active{% endif %}">
+                                          <input type="radio" name="posture" id="posture0" value="0" {% if form.posture.value == '0' %}checked{% endif %}> Close
+                                      </label>
+                                      <label class="btn btn-outline-secondary {% if form.posture.value == '1' %}active{% endif %}">
+                                          <input type="radio" name="posture" id="posture1" value="1" {% if form.posture.value == '1' %}checked{% endif %}> Open
+                                      </label>
+                                      <label class="btn btn-outline-secondary {% if form.posture.value == '2' %}active{% endif %}">
+                                          <input type="radio" name="posture" id="posture2" value="2" {% if form.posture.value == '2' %}checked{% endif %}> Open all the time
+                                      </label>
+                                  </div>
+                              </div>
+                          </div>
+                          
                             
-                                <!-- Review Date -->
-                                <label for="id_review_date">Review Date:</label>
-                                <input type="date" id="id_review_date" name="review_date" required>
-                                <br><br>
+                          <div class="form-row mx-6">
+                            <!-- Self Control -->
+                            <div class="form-group col-md-4">
+                                <label>Self Control:</label>
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-outline-secondary {% if form.self_control.value == '0' %}active{% endif %}">
+                                        <input type="radio" name="self_control" id="self_control0" value="0" {% if form.self_control.value == '0' %}checked{% endif %}> Not maintained
+                                    </label>
+                                    <label class="btn btn-outline-secondary {% if form.self_control.value == '1' %}active{% endif %}">
+                                        <input type="radio" name="self_control" id="self_control1" value="1" {% if form.self_control.value == '1' %}checked{% endif %}> Maintained
+                                    </label>
+                                </div>
+                            </div>
+                        
+                            <!-- Personality -->
+                            <div class="form-group col-md-4">
+                                <label>Personality:</label>
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-outline-secondary {% if form.personality.value == '1' %}active{% endif %}">
+                                        <input type="radio" name="personality" id="personality1" value="1" {% if form.personality.value == '1' %}checked{% endif %}> Introvert
+                                    </label>
+                                    <label class="btn btn-outline-secondary {% if form.personality.value == '2' %}active{% endif %}">
+                                        <input type="radio" name="personality" id="personality2" value="2" {% if form.personality.value == '2' %}checked{% endif %}> Ambivert
+                                    </label>
+                                    <label class="btn btn-outline-secondary {% if form.personality.value == '3' %}active{% endif %}">
+                                        <input type="radio" name="personality" id="personality3" value="3" {% if form.personality.value == '3' %}checked{% endif %}> Extrovert
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
                             
-                                <!-- Comments -->
-                                <label for="id_comments">Comments:</label>
-                                <textarea id="id_comments" name="comments" required></textarea>
-                                <br><br>
-                            
-                                <!-- Communication Skills -->
-                                <label for="id_communication_skills">Communication Skills:</label>
-                                <select id="id_communication_skills" name="communication_skills" required>
-                                    <option value="1">Poor</option>
-                                    <option value="2">Good</option>
-                                    <option value="3">Excellent</option>
-                                </select>
-                                <br><br>
-                            
-                                <!-- Facial Disclosure -->
-                                <label for="id_facial_disclosure">Facial Disclosure:</label>
-                                <select id="id_facial_disclosure" name="facial_disclosure" required>
-                                    <option value="0">Hides expressions</option>
-                                    <option value="1">Reveals expressions</option>
-                                </select>
-                                <br><br>
-                            
-                                <!-- Eye Contact -->
-                                <label for="id_eye_contact">Eye Contact:</label>
-                                <select id="id_eye_contact" name="eye_contact" required>
-                                    <option value="0">Doesn’t keep eye contact</option>
-                                    <option value="1">Normal</option>
-                                </select>
-                                <br><br>
-                            
-                                <!-- Posture -->
-                                <label for="id_posture">Posture:</label>
-                                <select id="id_posture" name="posture" required>
-                                    <option value="0">Close</option>
-                                    <option value="1">Open</option>
-                                    <option value="2">Open all the time</option>
-                                </select>
-                                <br><br>
-                            
-                                <!-- Self Control -->
-                                <label for="id_self_control">Self Control:</label>
-                                <select id="id_self_control" name="self_control" required>
-                                    <option value="0">Not maintained</option>
-                                    <option value="1">Maintained</option>
-                                </select>
-                                <br><br>
-                            
-                                <!-- Personality -->
-                                <label for="id_personality">Personality:</label>
-                                <select id="id_personality" name="personality" required>
-                                    <option value="1">Introvert</option>
-                                    <option value="2">Ambivert</option>
-                                    <option value="3">Extrovert</option>
-                                </select>
-                                <br><br>
-                            
-                                <!-- Handling Question 1 -->
-                                <label for="id_handling_question_1">Handling Question 1:</label>
-                                <select id="id_handling_question_1" name="handling_question_1" required>
-                                    <option value="0">Poor</option>
-                                    <option value="2">Good</option>
-                                    <option value="3">Excellent</option>
-                                </select>
-                                <br><br>
-                            
-                                <!-- Handling Question 2 -->
-                                <label for="id_handling_question_2">Handling Question 2:</label>
-                                <select id="id_handling_question_2" name="handling_question_2" required>
-                                    <option value="0">Poor</option>
-                                    <option value="2">Good</option>
-                                    <option value="3">Excellent</option>
-                                </select>
-                                <br><br>
-                           
-                           </div> 
+                        <div class="form-row ">
+                          <!-- Handling Question 1 -->
+                          <div class="form-group col-md-4">
+                              <label>Handling Question 1:</label>
+                              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                  <label class="btn btn-outline-secondary {% if form.handling_question_1.value == '0' %}active{% endif %}">
+                                      <input type="radio" name="handling_question_1" id="handling_question_10" value="0" {% if form.handling_question_1.value == '0' %}checked{% endif %}> Poor
+                                  </label>
+                                  <label class="btn btn-outline-secondary {% if form.handling_question_1.value == '2' %}active{% endif %}">
+                                      <input type="radio" name="handling_question_1" id="handling_question_12" value="2" {% if form.handling_question_1.value == '2' %}checked{% endif %}> Good
+                                  </label>
+                                  <label class="btn btn-outline-secondary {% if form.handling_question_1.value == '3' %}active{% endif %}">
+                                      <input type="radio" name="handling_question_1" id="handling_question_13" value="3" {% if form.handling_question_1.value == '3' %}checked{% endif %}> Excellent
+                                  </label>
+                              </div>
+                          </div>
+                      
+                          <!-- Handling Question 2 -->
+                          <div class="form-group col-md-4">
+                              <label>Handling Question 2:</label>
+                              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                  <label class="btn btn-outline-secondary {% if form.handling_question_2.value == '0' %}active{% endif %}">
+                                      <input type="radio" name="handling_question_2" id="handling_question_20" value="0" {% if form.handling_question_2.value == '0' %}checked{% endif %}> Poor
+                                  </label>
+                                  <label class="btn btn-outline-secondary {% if form.handling_question_2.value == '2' %}active{% endif %}">
+                                      <input type="radio" name="handling_question_2" id="handling_question_22" value="2" {% if form.handling_question_2.value == '2' %}checked{% endif %}> Good
+                                  </label>
+                                  <label class="btn btn-outline-secondary {% if form.handling_question_2.value == '3' %}active{% endif %}">
+                                      <input type="radio" name="handling_question_2" id="handling_question_23" value="3" {% if form.handling_question_2.value == '3' %}checked{% endif %}> Excellent
+                                  </label>
+                              </div>
+                          </div>
+                      </div>
+                      
+                        
                   </div>
                   <div class="card-footer border-top">
                     <input class="btn btn-sm btn-accent ml-auto d-table mr-3" type="submit" value="Submit">

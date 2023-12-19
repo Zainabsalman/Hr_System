@@ -367,19 +367,26 @@ def Report(request):
     return render(request, "Report.html", context)
 
 def PerformanceReview_detail(request, review_id):
+    username = request.user.username
     review = get_object_or_404(PerformanceReview, pk=review_id)  
-    context = {'review': review}
+    context = {'review': review,
+               'username': username
+               }
     return render(request, 'performance_detail.html', context)
 
 def evaluationreview_detail(request, review_id):
+    username = request.user.username
     review = get_object_or_404(EvaluationReview, pk=review_id)
-    context = {'review': review}
+    context = {'review': review,
+               'username': username
+               }
     return render(request, 'evaluationreview_detail.html', context)
 
 def EvaluateEmployee(request):
     username = request.user.username
     return render(request, "EvaluateEmployee.html", {'username': username})
 def EvaluateApplicant(request, applicant_id):
+    username = request.user.username
     applicant = get_object_or_404(Applicants, pk=applicant_id)
 
     if request.method == 'POST':
@@ -395,6 +402,7 @@ def EvaluateApplicant(request, applicant_id):
     context = {
         'form': form,
         'applicant': applicant,
+        'username':username
     }
     return render(request, 'EvaluateApplicant.html', context)
 

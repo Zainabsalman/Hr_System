@@ -118,7 +118,7 @@ class PerformanceReviewForm(forms.ModelForm):
         fields = [
             'employee', 'reviewer', 'score', 'review_date', 'comments',
             'communication_skills', 'teamwork', 'problem_solving',
-            'adaptability', 'punctuality'
+            'adaptability', 'punctuality','leadership'
         ]
 
     def __init__(self, *args, **kwargs):

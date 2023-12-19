@@ -12,7 +12,7 @@
     <!-- End Google Tag Manager -->
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>User Profile</title>
+    <title>Evaluate Employee</title>
     <meta name="description" content="A premium collection of beautiful hand-crafted Bootstrap 4 admin dashboard templates and dozens of custom components built for data-driven applications.">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
@@ -185,10 +185,10 @@
               </button>
             </div>
           </div>-->
-          <div class="main-content-container container-fluid px-4">
+          <div class="container-fluid px-4">
             <div class="row">
-              <div class="col-lg-8 mx-auto mt-4">
-                <!-- Edit User Details Card -->
+                <div class="col-lg-11 mx-auto mt-4">
+                    <!-- Edit User Details Card -->
                 <div class="card card-small edit-user-details mb-4">
                   <div class="card-header p-0">
                     <div class="edit-user-details__bg">
@@ -197,129 +197,201 @@
                       --> 
                     </div>
                   </div>
-                  <div class="card-body p-0">
-                    </div>
-                    <form action="#" class="py-4">
-                      <div class="form-row mx-4">
-                        <div class="col mb-3">
-                          <h5 class="form-text m-0"> Evaluation Form</h5>
-                          <p class="form-text text-muted m-0">Record Evaluation for {{ employee.name}}</p>
+                  <div class="card-body">
+                    <div class="py-4">
+                        <div class="form-row mx-4">
+                            <div class="col mb-3">
+                                <h5 class="form-text m-0">Evaluation Form</h5>
+                                <p class="form-text text-muted m-0">Record Evaluation for {{ employee.name }}</p>
+                            </div>
                         </div>
-                      </div>
-                      <div class="form-row mx-4">
-                        <div class="col-lg-8">
-                          <div class="form-row">
-                            <div class="form-row mx-4">
-                                <div class="col-lg-8">
-                                  <div class="form-row">
+                
+                        <div class="form-row mx-4">
+                            <!-- Employee Information Form -->
+                            <div class="col-lg-8">
+                                <div class="form-row">
                                     <div class="form-group col-md-6">
-                                      <label for="firstName"> Name:</label>
-                                      <input type="text" class="form-control" id="firstName" value="{{ employee.name }} "disabled>
+                                        <label for="firstName">Name:</label>
+                                        <input type="text" class="form-control" id="firstName" value="{{ employee.name }}" disabled>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="lastName">Email</label>
-                                        <input type="text" class="form-control" id="lastName" value=" {{ employee.mobile_number }}" disabled>
-                                      </div>
-                                      <div class="form-group col-md-6">
-                                        <label for="lastName">DOB</label>
-                                        <input type="text" class="form-control" id="lastName" value=" {{ employee.dob }}" disabled>
-                                      </div>
-                                      <div class="form-group col-md-6">
-                                        <label for="lastName">MobileNumber</label>
-                                        <input type="text" class="form-control" id="lastName" value=" {{ employee.mobile_number }}" disabled>
-                                      </div>
-
-                                      <div class="col-lg-4" style="margin-left: 350px; margin-top: -170px;">
-                                        <label for="userProfilePicture" class="text-center w-100 mb-4">Profile Picture</label>
-                                        <div class="edit-user-details__avatar m-auto">
-                                          <img src="{% static 'img/user_avatar.png' %}" style="margin-left: 50px; margin-top: -17px;" alt="User Avatar">
-                                          <label class="edit-user-details__avatar__change">
-                                          <input type="file" id="userProfilePicture" class="d-none">
-                                          </label>
-                                        </div>
-                                      </div>
-                                    </form>
-                              <div>
-
+                                        <label for="email">Email:</label>
+                                        <input type="text" class="form-control" id="email" value="{{ employee.email }}" disabled>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="dob">DOB:</label>
+                                        <input type="text" class="form-control" id="dob" value="{{ employee.dob }}" disabled>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="mobileNumber">Mobile Number:</label>
+                                        <input type="text" class="form-control" id="mobileNumber" value="{{ employee.mobile_number }}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <!-- Profile Picture -->
+                            <div class="col-lg-4">
+                                <label for="userProfilePicture" class="text-center w-100 mb-4">Profile Picture</label>
+                                <div class="edit-user-details__avatar m-auto">
+                                    <img src="{% static 'img/user_avatar.png' %}" alt="User Avatar">
+                                    <label class="edit-user-details__avatar__change">
+                                        <input type="file" id="userProfilePicture" class="d-none">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+ <hr> <!-- Horizontal line as a separator -->
+                              <div class="form-row mx-4">
                                 <form method="post" action="{% url 'evaluate_employee' employee.employee_id %}">
                                   {% csrf_token %}
                               
-                                  <!-- Hidden Field for Employee ID -->
-                                 <input type="hidden" id="id_employee" name="employee" value="{{ employee.employee_id }}">
-
-                                  <!-- Hidden Field for Reviewer ID -->
-                                  <input type="hidden" id="id_reviewer" name="reviewer" value="{{ request.user.id }}">
-
-                              
-                                  <!-- Reviewer ID (Assuming you can fetch the reviewer's ID from the request) -->
+                                  <!-- Hidden Fields -->
+                                  <input type="hidden" id="id_employee" name="employee" value="{{ employee.employee_id }}">
                                   <input type="hidden" id="id_reviewer" name="reviewer" value="{{ request.user.id }}">
                               
-                                  <!-- Score -->
-                                  <label for="id_score">Score:</label>
-                                  <input type="number" id="id_score" name="score" required>
-                                  <br><br>
-                              
-                                  <!-- Review Date -->
-                                  <label for="id_review_date">Review Date:</label>
-                                  <input type="date" id="id_review_date" name="review_date" required>
-                                  <br><br>
+                                  <!-- Score Slider and Review Date -->
+                                  <div class="form-row">
+                                      <div class="form-group col-md-6">
+                                          <label for="id_score">Score:</label>
+                                          <input type="range" class="form-control-range" id="id_score" name="score" min="1" max="10" required>
+                                          <small id="scoreHelp" class="form-text text-muted">
+                                              Score Value: <span id="scoreValue">5</span>
+                                          </small>
+                                      </div>
+                                      <div class="form-group col-md-6">
+                                          <label for="id_review_date">Review Date:</label>
+                                          <input type="date" class="form-control" id="id_review_date" name="review_date" required>
+                                      </div>
+                                  </div>
                               
                                   <!-- Comments -->
-                                  <label for="id_comments">Comments:</label>
-                                  <textarea id="id_comments" name="comments" required></textarea>
-                                  <br><br>
+                                  <div class="form-group col-md-12">
+                                      <label for="id_comments">Comments:</label>
+                                      <textarea class="form-control" id="id_comments" name="comments" rows="3" required></textarea>
+                                  </div>
                               
                                   <!-- Communication Skills -->
-                                  <label for="id_communication_skills">Communication Skills:</label>
-                                  <select id="id_communication_skills" name="communication_skills" required>
-                                      <option value="1">Needs Improvement</option>
-                                      <option value="2">Satisfactory</option>
-                                      <option value="3">Exemplary</option>
-                                  </select>
-                                  <br><br>
+                                  <div class="form-row">
+                                    <!-- Communication Skills -->
+                                    <div class="form-group col-md-6">
+                                        <label>Communication Skills:</label>
+                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                            <label class="btn btn-outline-secondary {% if form.communication_skills.value == '1' %}active{% endif %}">
+                                                <input type="radio" name="communication_skills" id="communication1" value="1" {% if form.communication_skills.value == '1' %}checked{% endif %}> Needs Improvement
+                                            </label>
+                                            <label class="btn btn-outline-secondary {% if form.communication_skills.value == '2' %}active{% endif %}">
+                                                <input type="radio" name="communication_skills" id="communication2" value="2" {% if form.communication_skills.value == '2' %}checked{% endif %}> Satisfactory 
+                                            </label>
+                                            <label class="btn btn-outline-secondary {% if form.communication_skills.value == '3' %}active{% endif %}">
+                                                <input type="radio" name="communication_skills" id="communication3" value="3" {% if form.communication_skills.value == '3' %}checked{% endif %}> Perfect Skills
+                                            </label>
+                                        </div>
+                                    </div>
+                                
+                                    <!-- Leadership -->
+                                    <div class="form-group col-md-4">
+                                        <label>Leadership:</label>
+                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                            <label class="btn btn-outline-secondary {% if form.leadership.value == '1' %}active{% endif %}">
+                                                <input type="radio" name="leadership" id="leadership2" value="1" {% if form.leadership.value == '1' %}checked{% endif %}> Rarely Demonstrates
+                                            </label>
+                                            <label class="btn btn-outline-secondary {% if form.leadership.value == '2' %}active{% endif %}">
+                                                <input type="radio" name="leadership" id="leadership4" value="2" {% if form.leadership.value == '2' %}checked{% endif %}> Often
+                                            </label>
+                                            <label class="btn btn-outline-secondary {% if form.leadership.value == '3' %}active{% endif %}">
+                                                <input type="radio" name="leadership" id="leadership5" value="3" {% if form.leadership.value == '3' %}checked{% endif %}> Consistently Demonstrates
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                  </div>
                               
-                                  <!-- Teamwork -->
-                                  <label for="id_teamwork">Teamwork:</label>
-                                  <select id="id_teamwork" name="teamwork" required>
-                                      <option value="1">Requires Development</option>
-                                      <option value="2">Effective</option>
-                                      <option value="3">Highly Effective</option>
-                                  </select>
-                                  <br><br>
+                                  <!-- Teamwork and Problem Solving in a new row -->
+                                  <div class="form-row mx-4">
+                                    <div class="form-group col-md-6">
+                                          <label>Teamwork:</label>
+                                          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                              <!-- Insert radio button options here -->
+                               <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                                                        <label class="btn {% if form.teamwork.value == '1' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                                                                            <input type="radio" name="teamwork" id="teamwork1" value="1" autocomplete="off" {% if form.teamwork.value == '1' %}checked{% endif %}> Requires Development
+                                                                        </label>
+                                                                        <label class="btn {% if form.teamwork.value == '2' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                                                                            <input type="radio" name="teamwork" id="teamwork2" value="2" autocomplete="off" {% if form.teamwork.value == '2' %}checked{% endif %}> Effective
+                                                                        </label>
+                                                                        <label class="btn {% if form.teamwork.value == '3' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                                                                            <input type="radio" name="teamwork" id="teamwork3" value="3" autocomplete="off" {% if form.teamwork.value == '3' %}checked{% endif %}> Highly Effective
+                                                                        </label>
+                                                                    </div>
+                                          </div>
+                                      </div>
+                                      <div class="form-group col-md-4">
+                                          <label>Problem Solving:</label>
+                                          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                              <!-- Insert radio button options here -->
+                              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                                                      <label class="btn {% if form.problem_solving.value == '1' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                                                                          <input type="radio" name="problem_solving" id="problem_solving1" value="1" autocomplete="off" {% if form.problem_solving.value == '1' %}checked{% endif %}> Limited
+                                                                      </label>
+                                                                      <label class="btn {% if form.problem_solving.value == '2' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                                                                          <input type="radio" name="problem_solving" id="problem_solving2" value="2" autocomplete="off" {% if form.problem_solving.value == '2' %}checked{% endif %}> Adequate
+                                                                      </label>
+                                                                      <label class="btn {% if form.problem_solving.value == '3' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                                                                          <input type="radio" name="problem_solving" id="problem_solving3" value="3" autocomplete="off" {% if form.problem_solving.value == '3' %}checked{% endif %}> Resourceful
+                                                                      </label>
+                                                                  </div>
+                                          </div>
+                                      </div>
+                                  </div>
                               
-                                  <!-- Problem Solving -->
-                                  <label for="id_problem_solving">Problem Solving:</label>
-                                  <select id="id_problem_solving" name="problem_solving" required>
-                                      <option value="1">Limited</option>
-                                      <option value="2">Adequate</option>
-                                      <option value="3">Resourceful</option>
-                                  </select>
-                                  <br><br>
+                                  <!-- Adaptability and Punctuality in a new row -->
+                                  <div class="form-row mx-4">
+                                      <div class="form-group col-md-6">
+                                          <label>Adaptability:</label>
+                                          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                              <!-- Insert radio button options here -->
+                              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                                                              <label class="btn {% if form.adaptability.value == '1' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                                                                                  <input type="radio" name="adaptability" id="adaptability1" value="1" autocomplete="off" {% if form.adaptability.value == '1' %}checked{% endif %}> Struggles to Adapt
+                                                                              </label>
+                                                                              <label class="btn {% if form.adaptability.value == '2' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                                                                                  <input type="radio" name="adaptability" id="adaptability2" value="2" autocomplete="off" {% if form.adaptability.value == '2' %}checked{% endif %}> Adapts Well
+                                                                              </label>
+                                                                              <label class="btn {% if form.adaptability.value == '3' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                                                                                  <input type="radio" name="adaptability" id="adaptability3" value="3" autocomplete="off" {% if form.adaptability.value == '3' %}checked{% endif %}> Quickly Adapts
+                                                                              </label>
+                                                                          </div>
+                                          </div>
+                                      </div>
+                                      <div class="form-group col-md-6">
+                                          <label>Punctuality:</label>
+                                          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                              <!-- Insert radio button options here -->
+                                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                                                        <label class="btn {% if form.punctuality.value == '1' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                                                                            <input type="radio" name="punctuality" id="punctuality1" value="1" autocomplete="off" {% if form.punctuality.value == '1' %}checked{% endif %}> Often Late
+                                                                        </label>
+                                                                        <label class="btn {% if form.punctuality.value == '2' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                                                                            <input type="radio" name="punctuality" id="punctuality2" value="2" autocomplete="off" {% if form.punctuality.value == '2' %}checked{% endif %}> Usually On Time
+                                                                        </label>
+                                                                        <label class="btn {% if form.punctuality.value == '3' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                                                                            <input type="radio" name="punctuality" id="punctuality3" value="3" autocomplete="off" {% if form.punctuality.value == '3' %}checked{% endif %}> Consistently On Time
+                                                                        </label>
+                                                                    </div>
+                                          </div>
+                                      </div>
+                                  </div>
                               
-                                  <!-- Adaptability -->
-                                  <label for="id_adaptability">Adaptability:</label>
-                                  <select id="id_adaptability" name="adaptability" required>
-                                      <option value="1">Struggles to Adapt</option>
-                                      <option value="2">Adapts Well</option>
-                                      <option value="3">Quickly Adapts</option>
-                                  </select>
-                                  <br><br>
-                              
-                                  <!-- Punctuality -->
-                                  <label for="id_punctuality">Punctuality:</label>
-                                  <select id="id_punctuality" name="punctuality" required>
-                                      <option value="1">Often Late</option>
-                                      <option value="2">Usually On Time</option>
-                                      <option value="3">Consistently On Time</option>
-                                  </select>
-                                  <br><br>
-                              
-                                  <!-- Add other fields using the same structure as above -->
-                              
+                                  <!-- Submit Button -->
                                   <div class="card-footer border-top">
-                                      <input class="btn btn-sm btn-accent ml-auto d-table mr-3" type="submit" value="Submit">
+                                      <input class="btn btn-accent btn-sm ml-auto d-table mr-3" type="submit" value="Submit">
                                   </div>
                               </form>
+       
+    
                               
             {% if form.errors %}
             <p>There are errors in the form:</p>
@@ -331,11 +403,10 @@
                 {% endfor %}
             </ul>
         {% endif %}
-                
-                <!-- End Edit User Details Card -->
-              </div>
-            </div>
-          </div>
+
+
+
+
         </main>
       </div>
     </div>
@@ -351,3 +422,10 @@
 
   </body>
 </html>
+<script>
+  const scoreSlider = document.getElementById('id_score');
+  const scoreOutput = document.getElementById('scoreValue');
+  scoreSlider.oninput = function() {
+      scoreOutput.textContent = this.value;
+  }
+</script>

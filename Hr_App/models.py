@@ -108,7 +108,7 @@ class PerformanceReview(models.Model):
     problem_solving = models.IntegerField(choices=[(1, 'Limited'), (2, 'Adequate'), (3, 'Resourceful')])
     adaptability = models.IntegerField(choices=[(1, 'Struggles to Adapt'), (2, 'Adapts Well'), (3, 'Quickly Adapts')])
     punctuality = models.IntegerField(choices=[(1, 'Often Late'), (2, 'Usually On Time'), (3, 'Consistently On Time')])
-
+    leadership = models.IntegerField(choices=[(1, 'Occasionally Demonstrated'), (2, 'Frequently Demonstrated'), (3, 'Consistently Demonstrated')])
     # Other relevant fields as needed
 
     def __str__(self):
