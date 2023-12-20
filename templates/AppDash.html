@@ -1,5 +1,6 @@
 
 {% load static %}
+{% load my_custom_tags %}
 <!doctype html>
 <html class="no-js h-100" lang="en">
   <head>
@@ -58,25 +59,72 @@
           </form>
           <div class="nav-wrapper">
             <ul class="nav flex-column">
+              {% get_user_role request.user as user_role %}
+
+              {% if user_role == 'applicant' %}
               <li class="nav-item">
-                <a class="nav-link active" href="{% url 'index' %}">
+                <a class="nav-link " href="{% url 'applicant_dashboard' %}">
                   <i class="material-icons">dashboard</i>
                   <span>Dashboard</span>
                 </a>
               </li>
-             
+              {% endif %}
+
+              {% if user_role == 'employee' %}
+              <li class="nav-item">
+                <a class="nav-link active" href="{% url 'employee_dashboard' %}">
+                  <i class="material-icons">dashboard</i>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              {% endif %}
+
+              </li>
+              {% if user_role == 'hr_admin' %}
+              <li class="nav-item">
+                <a class="nav-link " href="{% url 'index' %}">
+                  <i class="material-icons">dashboard</i>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              {% endif %}
+
+              {% if user_role == 'hr_admin' or user_role == 'employee' %}
+              <li class="nav-item">
+                <a class="nav-link " href="{% url 'Leaves' %}">
+                  <i class="material-icons">directions_walk</i>
+                  <span>Leaves</span>
+                </a>
+              </li>
+             {% endif %}
               <li class="nav-item">
                 <a class="nav-link " href="{% url 'Vaccincies' %}">
                   <i class="material-icons">business_center</i>
                   <span>Vacancies</span>
                 </a>
               </li>
+       
+              
+              {% if user_role == 'hr_admin' %}
+              <li class="nav-item">
+                <a class="nav-link " href="{% url 'ApplicationManagement' %}">
+                  <i class="material-icons">recent_actors</i>
+                  <span>Applicants</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " href="{% url 'Employees' %}">
+                  <i class="material-icons">wc</i>
+                  <span>Employees</span>
+                </a>
+              </li>
+              {% endif %}
              
-            
+              
               <li class="nav-item">
                 <a class="nav-link " href="{% url 'Report' %}">
                   <i class="material-icons">content_paste</i>
-                  <span> Report</span>
+                  <span>Report</span>
                 </a>
               </li>
               <li class="nav-item">
@@ -91,7 +139,8 @@
                   <span>User Profile</span>
                 </a>
               </li>
-              
+      
+
             </ul>
           </div>
         </aside>
@@ -184,8 +233,51 @@
                   <div class="card-body p-0 d-flex">
                     <div class="d-flex flex-column m-auto">
                       <div class="stats-small__data text-center">
-                        <span class="stats-small__label text-uppercase">Announcements</span>
-                        <h6 class="stats-small__value count my-3">{{ dashboard_stats.total_discussions }}</h6>
+                        <span class="stats-small__label text-uppercase">Application Status</span>
+                        <h6 class="stats-small__value count my-3" style="color:rgb(255, 195, 84);">
+                          {% for application in dashboard_stats.application_statuses %}
+                          {% if forloop.counter <= 1%}
+                           {{ application.status }}
+                          {% endif %}
+                      {% endfor %}
+                    </h6>
+
+                      </div>
+
+                    </div>
+                    <canvas height="120" class="blog-overview-stats-small-1"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg col-md-6 col-sm-6 mb-4">
+                <div class="stats-small stats-small--1 card card-small">
+                  <div class="card-body p-0 d-flex">
+                    <div class="d-flex flex-column m-auto">
+                      <div class="stats-small__data text-center">
+                        <span class="stats-small__label text-uppercase">Evaluations</span>
+                        <h6 class="stats-small__value count my-3">{{ dashboard_stats.total_evaluations }}</h6>
+                      </div>
+                      <div class="stats-small__data">
+                        <span class="stats-small__percentage stats-small__percentage--increase">12.4%</span>
+                      </div>
+                    </div>
+                    <canvas height="120" class="blog-overview-stats-small-2"></canvas>
+                  </div>
+                </div>
+              </div>
+          
+            
+             
+            </div>
+    
+            <div class="row">
+              <div class="col-lg col-md-6 col-sm-6 mb-4">
+                <div class="stats-small stats-small--1 card card-small">
+                  <div class="card-body p-0 d-flex">
+                    <div class="d-flex flex-column m-auto">
+                      <div class="stats-small__data text-center">
+                        <span class="stats-small__label text-uppercase">Applied Jobs</span>
+                        <h6 class="stats-small__value count my-3">{{ dashboard_stats.total_applied_jobs }}</h6>
                       </div>
                       <div class="stats-small__data">
                         <span class="stats-small__percentage stats-small__percentage--increase">4.7%</span>
@@ -200,8 +292,8 @@
                   <div class="card-body p-0 d-flex">
                     <div class="d-flex flex-column m-auto">
                       <div class="stats-small__data text-center">
-                        <span class="stats-small__label text-uppercase">Leaves</span>
-                        <h6 class="stats-small__value count my-3">{{ dashboard_stats.total_leaves }}</h6>
+                        <span class="stats-small__label text-uppercase">Evaluations</span>
+                        <h6 class="stats-small__value count my-3">{{ dashboard_stats.total_evaluations }}</h6>
                       </div>
                       <div class="stats-small__data">
                         <span class="stats-small__percentage stats-small__percentage--increase">12.4%</span>
@@ -232,8 +324,8 @@
                   <div class="card-body p-0 d-flex">
                     <div class="d-flex flex-column m-auto">
                       <div class="stats-small__data text-center">
-                        <span class="stats-small__label text-uppercase">Staff</span>
-                        <h6 class="stats-small__value count my-3">{{ dashboard_stats.total_employees }}</h6>
+                        <span class="stats-small__label text-uppercase">Announcements</span>
+                        <h6 class="stats-small__value count my-3">{{ dashboard_stats.total_announcements }}</h6>
                       </div>
                       <div class="stats-small__data">
                         <span class="stats-small__percentage stats-small__percentage--increase">12.4%</span>
@@ -243,22 +335,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-lg col-md-4 col-sm-12 mb-4">
-                <div class="stats-small stats-small--1 card card-small">
-                  <div class="card-body p-0 d-flex">
-                    <div class="d-flex flex-column m-auto">
-                      <div class="stats-small__data text-center">
-                        <span class="stats-small__label text-uppercase">Applicants</span>
-                        <h6 class="stats-small__value count my-3">{{ dashboard_stats.total_applicants }}</h6>
-                      </div>
-                      <div class="stats-small__data">
-                        <span class="stats-small__percentage stats-small__percentage--decrease">2.4%</span>
-                      </div>
-                    </div>
-                    <canvas height="120" class="blog-overview-stats-small-5"></canvas>
-                  </div>
-                </div>
-              </div>
+             
             </div>
             <!-- End Small Stats Blocks -->
             <div class="row">

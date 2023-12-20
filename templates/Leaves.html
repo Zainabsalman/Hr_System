@@ -1,4 +1,5 @@
 {% load static %}
+{% load my_custom_tags %}
 <!doctype html>
 <html class="no-js h-100" lang="en">
   <head>
@@ -54,24 +55,53 @@
             </form>
             <div class="nav-wrapper">
               <ul class="nav flex-column">
+                {% get_user_role request.user as user_role %}
+
+                {% if user_role == 'applicant' %}
+                <li class="nav-item">
+                  <a class="nav-link " href="{% url 'applicant_dashboard' %}">
+                    <i class="material-icons">dashboard</i>
+                    <span>Dashboard</span>
+                  </a>
+                </li>
+                {% endif %}
+
+                {% if user_role == 'employee' %}
+                <li class="nav-item">
+                  <a class="nav-link " href="{% url 'employee_dashboard' %}">
+                    <i class="material-icons">dashboard</i>
+                    <span>Dashboard</span>
+                  </a>
+                </li>
+                {% endif %}
+
+                </li>
+                {% if user_role == 'hr_admin' %}
                 <li class="nav-item">
                   <a class="nav-link " href="{% url 'index' %}">
                     <i class="material-icons">dashboard</i>
                     <span>Dashboard</span>
                   </a>
                 </li>
+                {% endif %}
+
+                {% if user_role == 'hr_admin' or user_role == 'employee' %}
                 <li class="nav-item">
                   <a class="nav-link active" href="{% url 'Leaves' %}">
                     <i class="material-icons">directions_walk</i>
                     <span>Leaves</span>
                   </a>
                 </li>
+               {% endif %}
                 <li class="nav-item">
                   <a class="nav-link " href="{% url 'Vaccincies' %}">
                     <i class="material-icons">business_center</i>
                     <span>Vacancies</span>
                   </a>
                 </li>
+         
+                
+                {% if user_role == 'hr_admin' %}
                 <li class="nav-item">
                   <a class="nav-link " href="{% url 'ApplicationManagement' %}">
                     <i class="material-icons">recent_actors</i>
@@ -84,10 +114,13 @@
                     <span>Employees</span>
                   </a>
                 </li>
+                {% endif %}
+               
+                
                 <li class="nav-item">
                   <a class="nav-link " href="{% url 'Report' %}">
                     <i class="material-icons">content_paste</i>
-                    <span> Report</span>
+                    <span>Report</span>
                   </a>
                 </li>
                 <li class="nav-item">
@@ -102,7 +135,6 @@
                     <span>User Profile</span>
                   </a>
                 </li>
-                
               </ul>
             </div>
           </aside>
@@ -185,6 +217,7 @@
               <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
                 <span class="text-uppercase page-subtitle">Overview</span>
                 <h3 class="page-title">Leaves</h3>
+                 <a href="{% url 'apply_for_leave' %}" class="btn btn-sm btn-outline-accent"  style="margin-left: 860px; margin-top: -50px;">Apply For Leave  </a>
               </div>
             </div>
             <!-- End Page Header -->
@@ -194,7 +227,7 @@
                 <div class="card card-small overflow-hidden mb-4">
                   <div class="card-header border-bottom">
                     <h6 class="m-0">All Leaves</h6>
-                    <a href="{% url 'apply_for_leave' %}" class="btn btn-secondary"  style="margin-left: 830px; margin-bottom: -55px;">Apply For Leave  </a>
+                   
                     <br>   
                     <!-- Toggle for HR Admin -->
                <!-- Toggle for HR Admin -->

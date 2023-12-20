@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from .functions import handle_uploaded_file, handle_uploaded_file2
+from .functions import get_user_role, handle_uploaded_file, handle_uploaded_file2
 
 from .forms import (
     
@@ -79,6 +79,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Applicants, JobOpenings, Employees, Announcement, LeaveRecords, ApplicantJob  # Import your models
 import json
 from django.core.serializers.json import DjangoJSONEncoder
+
+
 @login_required
 def index(request):
     today = timezone.now()
@@ -156,36 +158,6 @@ def index(request):
     
     return render(request, 'index.html', context)
 
-
-# def logIn(request):
-#     if request.method == "POST":
-#         username = request.user.username
-#         password = request.POST.get('password')
-#         user = authenticate(request, username=username, password=password)
-
-#         if user is not None:
-#             login(request, user)
-
-#             # Check if the user is an Applicant
-#             if Applicants.objects.filter(user=user).exists():
-#                 return redirect('applicant_dashboard')
-
-#             # Check if the user is an Employee and its role
-#             elif Employees.objects.filter(user=user).exists():
-#                 employee = Employees.objects.get(user=user)
-#                 if employee.role == 'hr_admin':  # Assuming you have a 'role' field
-#                     return redirect('hr_admin_dashboard')
-#                 else:
-#                     return redirect('employee_dashboard')
-
-#             # Fallback redirect if none of the above
-#             return redirect('index.html')
-
-#         else:
-#             messages.error(request, "Invalid username or password.")
-
-#         return render(request, "logIn.html", {'username': username})
-
 @login_required
 def employee_dashboard(request):
     employee = request.user.employees
@@ -198,34 +170,63 @@ def employee_dashboard(request):
 
 @login_required
 def applicant_dashboard(request):
-    # Assuming your Applicant model is related to the User model
-    # and you have a related name 'applicants' set up in your model
-    applicant = request.user.applicants
+    username = request.user.username
+       # Ensure the user is logged in
+    if not request.user.is_authenticated:
+        # Redirect to login or handle unauthenticated user
+        pass
 
-    # Prepare data for the applicant dashboard
+     # Get the Applicants instance for the logged-in user
+    applicant = Applicants.objects.get(user=request.user)
+    # Query for the number of applied jobs for the logged-in applicant
+    applied_jobs_count = ApplicantJob.objects.filter(applicant_id=applicant).count()
+
+    # Query for the number of evaluations for the logged-in user
+
+    evaluations_count = EvaluationReview.objects.filter(applicant_id=applicant).count()
+
+    # Query for the number of announcements
+    announcements_count = Announcement.objects.all().count()
+
+    # Query for the number of job openings
+    job_openings_count = JobOpenings.objects.all().count()
+
+    # Query for the applicant's job applications
+    applicant_jobs = ApplicantJob.objects.filter(applicant_id=applicant)
+
+        # Get the status of each application
+    application_statuses = applicant_jobs.values('status')  # Assuming JobOpenings model has a 'title' field
+
     context = {
-        # 'applicant_name': applicant.name,
-        # 'application_status': applicant.application_status,  # Assuming such a field exists
-        # # ... other applicant-specific data
+        'username': username,
+        'dashboard_stats': {
+            'total_applied_jobs': applied_jobs_count,
+            'total_evaluations': evaluations_count,
+            'total_announcements': announcements_count,
+            'total_job_openings': job_openings_count,
+            'application_statuses': application_statuses,
+        }
     }
 
     return render(request, 'AppDash.html', context)
 
+@login_required
 def employees_list(request):
     username = request.user.username
     employees = Employees.objects.all()
     return render(request, 'Employees.html', {'username': username, 'employees': employees})
 
-#@login_required
+@login_required
 def ApplicationManagement(request):
     username = request.user.username
     return render(request, "ApplicationManagement.html", {'username': username})
 
-
+@login_required
 def Discussions(request):
     username = request.user.username
     return render(request, "Discussions.html", {'username': username})
 
+@login_required
 def employee_details(request, employee_id):
     username = request.user.username
     employee = get_object_or_404(Employees, pk=employee_id)
@@ -233,7 +234,7 @@ def employee_details(request, employee_id):
     # Pass the employee details and username to the template for rendering
     return render(request, 'employee_details.html', {'employee': employee, 'username': username})
 
-
+@login_required
 def opening_details(request, opening_id):
     opening = get_object_or_404(JobOpenings, pk=opening_id)
     context = {'opening': opening}
@@ -322,26 +323,17 @@ def edit_user_profile(request):
     context['form'] = form
     return render(request, template_name, context)
 
+@login_required
 def Vaccincies(request):
+    username = request.user.username
+
+    user_role = get_user_role(request.user)
+    
     context = {
-        'username': request.user.username,
-        'is_hr_admin': False,
-        'is_employee': False,
-    }
-
-    # Check if the user is linked to an Employees instance
-    try:
-        employee_profile = Employees.objects.get(user=request.user)
-        context['is_employee'] = True
-
-        # Check if the user's role is HR Admin
-        if employee_profile.role == 'hr_admin':
-            context['is_hr_admin'] = True
-    except Employees.DoesNotExist:
-        # Handle cases where the user is not linked to an Employees instance
-        pass
-
-    # Add logic for applicants if necessary
+        'username': username,
+        'user_role': user_role
+        }
+        # ... your existing context variables ...
 
     return render(request, "Vaccincies.html", context)
 
@@ -353,7 +345,7 @@ def Vaccincies2(request):
     }
     return render(request, "vaccan_no_log.html", context)
 
-
+@login_required
 def Report(request):
     username = request.user.username
     employee_reviews = PerformanceReview.objects.all()
@@ -366,6 +358,7 @@ def Report(request):
     }
     return render(request, "Report.html", context)
 
+@login_required
 def PerformanceReview_detail(request, review_id):
     username = request.user.username
     review = get_object_or_404(PerformanceReview, pk=review_id)  
@@ -374,6 +367,7 @@ def PerformanceReview_detail(request, review_id):
                }
     return render(request, 'performance_detail.html', context)
 
+@login_required
 def evaluationreview_detail(request, review_id):
     username = request.user.username
     review = get_object_or_404(EvaluationReview, pk=review_id)
@@ -382,9 +376,12 @@ def evaluationreview_detail(request, review_id):
                }
     return render(request, 'evaluationreview_detail.html', context)
 
+@login_required
 def EvaluateEmployee(request):
     username = request.user.username
     return render(request, "EvaluateEmployee.html", {'username': username})
+
+@login_required
 def EvaluateApplicant(request, applicant_id):
     username = request.user.username
     applicant = get_object_or_404(Applicants, pk=applicant_id)
@@ -506,6 +503,7 @@ def signup(request):
     
 from django.db.models import Prefetch
 
+@login_required
 def applicant_list(request):
     # Fetch all applicants along with their related ApplicantJob details, ordered by application date
     applicants_with_jobs = Applicants.objects.prefetch_related(
@@ -523,17 +521,19 @@ def all_job_openings(request):
     return render(request, 'Vaccincies.html', context)
 
 #view to get all employee data
+@login_required
 def employee_details_dash(request, id):
     employee = employee.objects.get(id=id)
     return render(request, 'index.html', {'employee':employee})
     
    # return HttpResponse(request, 'HomePage')
-
+@login_required
 def logout_view(request):
     logout(request)
     # Redirect to a page after logout 
     return redirect('login')
 
+@login_required
 def addVacancy(request):
     if request.method == 'POST':
         form = VacancyForm(request.POST)
@@ -546,6 +546,7 @@ def addVacancy(request):
     username = request.user.username
     return render(request, 'addVacancy.html', {'form': form, 'username': username})
 
+@login_required
 def delete_vacancy(request, opening_id):
     # Fetch the instance to be deleted
     opening = get_object_or_404(JobOpenings, opening_id=opening_id)
@@ -555,6 +556,7 @@ def delete_vacancy(request, opening_id):
     
     return redirect('/Vaccincies')
 
+@login_required
 def delete_applicant(request, applicant_id):
     # Fetch the applicant instance to be deleted
     applicant = get_object_or_404(Applicants, applicant_id=applicant_id)
@@ -564,11 +566,13 @@ def delete_applicant(request, applicant_id):
     
     return redirect('/ApplicationManagement')
 
+@login_required
 def announcement_list(request):
     username = request.user.username
     announcements = Announcement.objects.all()
     return render(request, 'Discussions.html', {'announcements': announcements, 'username': username})
 
+@login_required
 def create_announcement(request):
     username = request.user.username
     if request.method == "POST":
@@ -591,7 +595,7 @@ def create_announcement(request):
 
 import xlwt
 
-
+@login_required
 def download_employee_list(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="employee_list.xls"'
@@ -618,6 +622,7 @@ def download_employee_list(request):
     wb.save(response)
     return response
 
+@login_required
 def download_applicant_list(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="applicant_list.xls"'
@@ -649,6 +654,8 @@ def download_applicant_list(request):
 
 
 from django.conf import settings
+
+@login_required
 def applicant_details(request, applicant_id):
     username = request.user.username
     applicant = get_object_or_404(Applicants, pk=applicant_id)
@@ -673,6 +680,7 @@ def applicant_details(request, applicant_id):
 
 from django.core.exceptions import ObjectDoesNotExist
 
+@login_required
 def apply_for_leave(request):
     username = request.user.username
     is_hr_admin = request.user.groups.filter(name='HR Admin').exists()
@@ -706,7 +714,7 @@ def apply_for_leave(request):
 
     return render(request, 'apply_for_leave.html', context)
 
-
+@login_required
 def leaves_view(request):
     username = request.user.username
     show_all = request.GET.get('show_all', 'false').lower() == 'true'

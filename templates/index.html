@@ -1,5 +1,6 @@
 
 {% load static %}
+{% load my_custom_tags %}
 <!doctype html>
 <html class="no-js h-100" lang="en">
   <head>
@@ -57,24 +58,53 @@
           </form>
           <div class="nav-wrapper">
             <ul class="nav flex-column">
+              {% get_user_role request.user as user_role %}
+
+              {% if user_role == 'applicant' %}
+              <li class="nav-item">
+                <a class="nav-link " href="{% url 'applicant_dashboard' %}">
+                  <i class="material-icons">dashboard</i>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              {% endif %}
+
+              {% if user_role == 'employee' %}
+              <li class="nav-item">
+                <a class="nav-link " href="{% url 'employee_dashboard' %}">
+                  <i class="material-icons">dashboard</i>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              {% endif %}
+
+              </li>
+              {% if user_role == 'hr_admin' %}
               <li class="nav-item">
                 <a class="nav-link active" href="{% url 'index' %}">
                   <i class="material-icons">dashboard</i>
                   <span>Dashboard</span>
                 </a>
               </li>
+              {% endif %}
+
+              {% if user_role == 'hr_admin' or user_role == 'employee' %}
               <li class="nav-item">
                 <a class="nav-link " href="{% url 'Leaves' %}">
                   <i class="material-icons">directions_walk</i>
                   <span>Leaves</span>
                 </a>
               </li>
+             {% endif %}
               <li class="nav-item">
                 <a class="nav-link " href="{% url 'Vaccincies' %}">
                   <i class="material-icons">business_center</i>
                   <span>Vacancies</span>
                 </a>
               </li>
+       
+              
+              {% if user_role == 'hr_admin' %}
               <li class="nav-item">
                 <a class="nav-link " href="{% url 'ApplicationManagement' %}">
                   <i class="material-icons">recent_actors</i>
@@ -87,10 +117,13 @@
                   <span>Employees</span>
                 </a>
               </li>
+              {% endif %}
+             
+              
               <li class="nav-item">
                 <a class="nav-link " href="{% url 'Report' %}">
                   <i class="material-icons">content_paste</i>
-                  <span> Report</span>
+                  <span>Report</span>
                 </a>
               </li>
               <li class="nav-item">
@@ -105,7 +138,6 @@
                   <span>User Profile</span>
                 </a>
               </li>
-              
             </ul>
           </div>
         </aside>
@@ -165,14 +197,13 @@
                      <span class="d-none d-md-inline-block">{{ username }}</span>
                   {% endif %}
                 </a>
-                  <div class="dropdown-menu dropdown-menu-small">
-                    <a class="dropdown-item" href="{% url 'userProfile' %}"><i class="material-icons">&#xE7FD;</i> Profile</a>
-                    <a class="dropdown-item" href="{% url 'userProfile' %}"><i class="material-icons">vertical_split</i> Blog Posts</a>
-                    <a class="dropdown-item" href="{% url 'userProfile' %}"><i class="material-icons">note_add</i> Add New Post</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item text-danger" href="{% url 'logout' %}">
-                      <i class="material-icons text-danger">&#xE879;</i> Logout </a>
-                  </div>
+                <div class="dropdown-menu dropdown-menu-small" style="width: 70px;">
+
+                  <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                      <i class="material-icons text-danger">&#xE879;</i> Logout 
+                  </a>
+              </div>
+              
                 </li>
               </ul>
               <nav class="nav">
@@ -313,7 +344,7 @@
                 </div>
               </div>
               <!-- End Users Stats > -->
-             <!-- End Users Stats > -->
+
               <!-- Users By Device Stats -->
               <div class="col-lg-6 col-md-12 col-sm-12 mb-4" style="margin-left: 666px; margin-top:-350px;">
                 <div class="card card-small h-100">
@@ -340,13 +371,14 @@
                         <div class="row">
                             <div class="col"></div>
                             <div class="col text-right view-report">
-                                <a href="#">View all Staff &rarr;</a>
+                                <a href="{% url 'Employees' %}">View all Staff &rarr;</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             
+
               <!-- End Users By Device Stats -->
               <div class="row">
                 <!-- Users Stats -->
@@ -383,7 +415,7 @@
               
                
               <!-- Top Referrals Component -->
-    <div class="col-lg-6 col-md-12 col-sm-12 mb-4" style="margin-left: 666px; margin-top:-348px;">
+    <div class="col-lg-6 col-md-12 col-sm-12 mb-4" style="margin-left: 666px; margin-top:-344px;">
       <div class="card card-small">
                   <div class="card-header border-bottom">
                     <h6 class="m-0">Recenet Job Openings</h6>
@@ -412,7 +444,7 @@
                             </select>
                         </div>
                         <div class="col text-right view-report">
-                            <a href="#">Full report &rarr;</a>
+                            <a href="{% url 'Report' %}">Full report &rarr;</a>
                         </div>
                     </div>
                 </div>

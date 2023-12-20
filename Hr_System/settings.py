@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Hr_App',
     'djongo',
-    'widget_tweaks'
+    'widget_tweaks',
+    
 ]
 
 # JAZZMIN_SETTINGS = {

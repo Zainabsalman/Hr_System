@@ -1,4 +1,5 @@
 {% load static %}
+{% load my_custom_tags %}
 <!doctype html>
 <html class="no-js h-100" lang="en">
   <head>
@@ -52,24 +53,53 @@
             </form>
             <div class="nav-wrapper">
               <ul class="nav flex-column">
+                {% get_user_role request.user as user_role %}
+
+                {% if user_role == 'applicant' %}
+                <li class="nav-item">
+                  <a class="nav-link " href="{% url 'applicant_dashboard' %}">
+                    <i class="material-icons">dashboard</i>
+                    <span>Dashboard</span>
+                  </a>
+                </li>
+                {% endif %}
+
+                {% if user_role == 'employee' %}
+                <li class="nav-item">
+                  <a class="nav-link " href="{% url 'employee_dashboard' %}">
+                    <i class="material-icons">dashboard</i>
+                    <span>Dashboard</span>
+                  </a>
+                </li>
+                {% endif %}
+
+                </li>
+                {% if user_role == 'hr_admin' %}
                 <li class="nav-item">
                   <a class="nav-link " href="{% url 'index' %}">
                     <i class="material-icons">dashboard</i>
                     <span>Dashboard</span>
                   </a>
                 </li>
+                {% endif %}
+
+                {% if user_role == 'hr_admin' or user_role == 'employee' %}
                 <li class="nav-item">
                   <a class="nav-link " href="{% url 'Leaves' %}">
                     <i class="material-icons">directions_walk</i>
                     <span>Leaves</span>
                   </a>
                 </li>
+               {% endif %}
                 <li class="nav-item">
                   <a class="nav-link " href="{% url 'Vaccincies' %}">
                     <i class="material-icons">business_center</i>
                     <span>Vacancies</span>
                   </a>
                 </li>
+         
+                
+                {% if user_role == 'hr_admin' %}
                 <li class="nav-item">
                   <a class="nav-link active" href="{% url 'ApplicationManagement' %}">
                     <i class="material-icons">recent_actors</i>
@@ -82,10 +112,13 @@
                     <span>Employees</span>
                   </a>
                 </li>
+                {% endif %}
+               
+                
                 <li class="nav-item">
                   <a class="nav-link " href="{% url 'Report' %}">
                     <i class="material-icons">content_paste</i>
-                    <span> Report</span>
+                    <span>Report</span>
                   </a>
                 </li>
                 <li class="nav-item">
@@ -100,7 +133,6 @@
                     <span>User Profile</span>
                   </a>
                 </li>
-                
               </ul>
             </div>
           </aside>
@@ -191,22 +223,18 @@
                 <!-- Edit User Details Card -->
                 <div class="card card-small edit-user-details mb-4">
                   <div class="card-header p-0">
-                    <div class="edit-user-details__bg">
-                     <!-- <img class="edit-user-details__bg" style=" overflow-clip-margin: content-box; overflow: clip;" src="{% static 'img/up-user-details-background.jpg' %}" alt="User Details Background Image">
-                      <label class="edit-user-details__change-background">
-                      --> 
-                    </div>
+                   
                   </div>
                   <div class="card-body">
                     <div class="py-4">
-                        <div class="form-row mx-4">
+                        <div class="form-row ">
                             <div class="col mb-3">
-                                <h5 class="form-text m-0">Evaluation Form</h5>
+                                <h4 class="form-text m-0">Evaluation Form</h4>
                                 <p class="form-text text-muted m-0">Record Evaluation for {{ applicant.name }}</p>
                             </div>
                         </div>
                       
-                        <div class="form-row mx-4">
+                        <div class="form-row ">
                           <!-- Employee Information Form -->
                           <div class="col-lg-8">
                               <div class="form-row">
@@ -431,3 +459,10 @@
 
   </body>
 </html>
+<script>
+  const scoreSlider = document.getElementById('id_score');
+  const scoreOutput = document.getElementById('scoreValue');
+  scoreSlider.oninput = function() {
+      scoreOutput.textContent = this.value;
+  }
+</script>

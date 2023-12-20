@@ -1,4 +1,5 @@
 {% load static %}
+{% load my_custom_tags %}
 <!doctype html>
 <html class="no-js h-100" lang="en">
   <head>
@@ -53,24 +54,53 @@
             </form>
             <div class="nav-wrapper">
               <ul class="nav flex-column">
+                {% get_user_role request.user as user_role %}
+
+                {% if user_role == 'applicant' %}
+                <li class="nav-item">
+                  <a class="nav-link " href="{% url 'applicant_dashboard' %}">
+                    <i class="material-icons">dashboard</i>
+                    <span>Dashboard</span>
+                  </a>
+                </li>
+                {% endif %}
+
+                {% if user_role == 'employee' %}
+                <li class="nav-item">
+                  <a class="nav-link " href="{% url 'employee_dashboard' %}">
+                    <i class="material-icons">dashboard</i>
+                    <span>Dashboard</span>
+                  </a>
+                </li>
+                {% endif %}
+
+                </li>
+                {% if user_role == 'hr_admin' %}
                 <li class="nav-item">
                   <a class="nav-link " href="{% url 'index' %}">
                     <i class="material-icons">dashboard</i>
                     <span>Dashboard</span>
                   </a>
                 </li>
+                {% endif %}
+
+                {% if user_role == 'hr_admin' or user_role == 'employee' %}
                 <li class="nav-item">
                   <a class="nav-link " href="{% url 'Leaves' %}">
                     <i class="material-icons">directions_walk</i>
                     <span>Leaves</span>
                   </a>
                 </li>
+               {% endif %}
                 <li class="nav-item">
                   <a class="nav-link " href="{% url 'Vaccincies' %}">
                     <i class="material-icons">business_center</i>
                     <span>Vacancies</span>
                   </a>
                 </li>
+         
+                
+                {% if user_role == 'hr_admin' %}
                 <li class="nav-item">
                   <a class="nav-link active" href="{% url 'ApplicationManagement' %}">
                     <i class="material-icons">recent_actors</i>
@@ -83,10 +113,13 @@
                     <span>Employees</span>
                   </a>
                 </li>
+                {% endif %}
+               
+                
                 <li class="nav-item">
                   <a class="nav-link " href="{% url 'Report' %}">
                     <i class="material-icons">content_paste</i>
-                    <span> Report</span>
+                    <span>Report</span>
                   </a>
                 </li>
                 <li class="nav-item">
@@ -101,7 +134,6 @@
                     <span>User Profile</span>
                   </a>
                 </li>
-                
               </ul>
             </div>
           </aside>
@@ -188,75 +220,130 @@
             </div>
           </div>-->
           <div class="main-content-container container-fluid px-4">
-            <div class="row">
-              <div class="col-lg-8 mx-auto mt-4">
-                <!-- Edit User Details Card -->
-                <div class="card card-small edit-user-details mb-4">
+            <!-- Page Header -->
+            <div class="page-header row no-gutters py-4">
+              <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                <span class="text-uppercase page-subtitle">Overview</span>
+                <h3 class="page-title">Applicant Details</h3>
+              </div>
+            </div>
+            <!-- End Page Header -->
                    
-                   <div class="card-header p-0">
-                    <div class="edit-user-details__bg">
+                <!-- End Edit User Details Card -->
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="card card-small mb-4 pt-3">
+                      <div class="card-header border-bottom text-center">
                       
-                     <!-- <img class="edit-user-details__bg" style=" overflow-clip-margin: content-box; overflow: clip;" src="{% static 'img/up-user-details-background.jpg' %}" alt="User Details Background Image">
-                      <label class="edit-user-details__change-background">
-                      --> 
-                    </div>
-                    <div class="card-body p-0">
+                      <h4 class="mb-0">{{ applicant.name }}</h4>
+                      
                      
-                        <h1>Applicant Information</h1>
-                        <h2>{{ applicant.name }}</h2>
-                        <p>Mobile Number: {{ applicant.mobile_number }}</p>
-                        <p>Email: {{ applicant.email }}</p>
-                        
-                        {% if applied_jobs %}
-    <h3>Applied Jobs</h3>
-    <ul>
-        {% for job in applied_jobs %}
-            <li>{{ job.opening.job_name }}</li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No applied jobs yet.</p>
-{% endif %}
-                        
-                        <h3>Evaluation Status</h3>
-                        {% for review in evaluations %}
-                        {% if review.review_id %}
-                            <a href="{% url 'evaluationreview_detail' review.review_id %}">
-                                <button class="btn btn-sm btn-gray ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0">Full Review</button>
-                            </a>
-                        {% else %}
-                            <!-- Handle case where review_id is missing -->
-                            <p>This applicant has not been evaluated yet.</p>
-                        {% endif %}
-                    {% endfor %}
- 
-                      <!-- Display cv -->
+                    </div>
+                    <ul class="list-group list-group-flush">
+                      <h5 class="m-0 text-center">Applicant CV</h5>
+                      <li class="list-group-item p-4">
+                         
+                            <!-- Display cv -->
                         {% for cv_url in cv_urls %}
-                        <h3>CV:</h3>
-                        <iframe src="{{ cv_url }}" style="width:80%; height:400px; margin-left: 70px;" frameborder="0"></iframe>
+                        
+                        <iframe src="{{ cv_url }}" style="width:100%; height:230px; margin-top: -15px;" frameborder="0"></iframe>
                     {% empty %}
                         <p>No CV has been uploaded.</p>
                     {% endfor %}
                     <!-- Download cv -->
                     {% for cv_url in cv_urls %}
-                    <a href="{{ cv_url }}" download="CV_{{ applicant.name }}">Download CV</a>
+                    <a href="{{ cv_url }}" download="CV_{{ applicant.name }}" class="btn btn-outline-secondary form-control">Download CV</a>
+                    
                     {% empty %}
                         <p></p>
                     {% endfor %}
-                    
-                                <div class="edit-user-details__avatar m-auto">
-                                  <label for="userProfilePicture" class="text-center w-100 mb-4">Profile Picture</label>
-                                  <img src="{% static 'img/user_avatar.png' %}" style="margin-left: 50px; margin-top: -17px;" alt="User Avatar">
-                                  <label class="edit-user-details__avatar__change">
-                                  <input type="file" id="userProfilePicture" class="d-none">
-                                  </label>
-                                </div>
-                          </form>
-                      </div>
+                    </ul>
                   </div>
-                  
                 </div>
-                <!-- End Edit User Details Card -->
+                
+                <div class="col-lg-6" >
+                  <div class="card card-small mb-4">
+                    <div class="card-header border-bottom">
+                      <h6 class="m-0">Account Details</h6>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item p-3">
+                        <div class="row">
+                          <div class="col">
+                              <form method="post" enctype="multipart/form-data">
+                                  {% csrf_token %}
+                                  
+                                  <!-- Custom design for each field -->
+                                  <div class="form-row">
+                                      <!-- Name Field -->
+                                      <div class="form-group col-md-6">
+                                        <label for="firstName">Name:</label>
+                                        <input type="text" class="form-control" id="firstName" value="{{ applicant.name }}" disabled>
+                                         
+                                      </div>
+                              
+                                      <!-- Date of Birth Field -->
+                                      <div class="form-group col-md-6">
+                                        <label for="DOB">Date of Birth:</label>
+                                        <input type="text" class="form-control" id="dob" value="{{ applicant.dob }}" disabled>
+                                         
+                                      </div>
+                                  </div>
+                              
+                                  <div class="form-row">
+                                      <!-- Email Field -->
+                                      <div class="form-group col-md-6">
+                                        <label for="email">Email:</label>
+                                        <input type="text" class="form-control" id="email" value="{{ applicant.email }}" disabled>
+                                         
+                                      </div>
+                              
+                                      <!-- Mobile Number Field -->
+                                      <div class="form-group col-md-6">
+                                        <label for="mobileNumber">Mobile Number:</label>
+                                      <input type="text" class="form-control" id="mobileNumber" value="{{ applicant.mobile_number }}" disabled>
+                                        
+                                      </div>
+                                  </div>
+                              
+                                  <div class="form-group">
+                                    <label for="applied_jobs_field">Applied Jobs</label>
+                                    <input type="text" class="form-control" id="applied_jobs_field" value="{% for job in applied_jobs %}{{ job.opening.job_name }}{% if not forloop.last %}, {% endif %}{% endfor %}" readonly>
+                                    {% if not applied_jobs %}
+                                    <p>No applied jobs yet.</p>
+                                    {% endif %}
+                                </div>
+                              
+                                  <div class="form-row ">
+
+                                    <div class="form-group col-md-12">
+                                      <label >Evaluation Reviews</label>
+                                        {% if evaluations %}
+                                            {% for review in evaluations %}
+                                                {% if review.review_id %}
+                                                    <a href="{% url 'evaluationreview_detail' review.review_id %}" class="btn btn-outline-secondary form-control">Full Review</a>
+                                                {% else %}
+                                                    <button class="btn btn-outline-secondary form-control" disabled>No Review</button>
+                                                {% endif %}
+                                            {% empty %}
+                                                <button class="btn btn-outline-secondary form-control" disabled>No Evaluations Found</button>
+                                            {% endfor %}
+                                        {% else %}
+                                            <button class="btn btn-outline-secondary form-control" disabled>No Evaluations Available</button>
+                                        {% endif %}
+                                    </div>
+                                    
+                                      
+                    
+                              
+                             
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
               </div>
             </div>
           </div>

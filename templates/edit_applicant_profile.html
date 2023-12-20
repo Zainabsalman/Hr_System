@@ -1,5 +1,6 @@
 {% load static %}
 {% load widget_tweaks %}
+{% load my_custom_tags %}
 <!doctype html>
 <html class="no-js h-100" lang="en">
   <head>
@@ -57,25 +58,72 @@
                     </form>
                     <div class="nav-wrapper">
                       <ul class="nav flex-column">
+                        {% get_user_role request.user as user_role %}
+        
+                        {% if user_role == 'applicant' %}
+                        <li class="nav-item">
+                          <a class="nav-link " href="{% url 'applicant_dashboard' %}">
+                            <i class="material-icons">dashboard</i>
+                            <span>Dashboard</span>
+                          </a>
+                        </li>
+                        {% endif %}
+        
+                        {% if user_role == 'employee' %}
+                        <li class="nav-item">
+                          <a class="nav-link " href="{% url 'employee_dashboard' %}">
+                            <i class="material-icons">dashboard</i>
+                            <span>Dashboard</span>
+                          </a>
+                        </li>
+                        {% endif %}
+        
+                        </li>
+                        {% if user_role == 'hr_admin' %}
                         <li class="nav-item">
                           <a class="nav-link " href="{% url 'index' %}">
                             <i class="material-icons">dashboard</i>
                             <span>Dashboard</span>
                           </a>
                         </li>
-                        
+                        {% endif %}
+        
+                        {% if user_role == 'hr_admin' or user_role == 'employee' %}
+                        <li class="nav-item">
+                          <a class="nav-link " href="{% url 'Leaves' %}">
+                            <i class="material-icons">directions_walk</i>
+                            <span>Leaves</span>
+                          </a>
+                        </li>
+                       {% endif %}
                         <li class="nav-item">
                           <a class="nav-link " href="{% url 'Vaccincies' %}">
                             <i class="material-icons">business_center</i>
                             <span>Vacancies</span>
                           </a>
                         </li>
+                 
                         
+                        {% if user_role == 'hr_admin' %}
+                        <li class="nav-item">
+                          <a class="nav-link " href="{% url 'ApplicationManagement' %}">
+                            <i class="material-icons">recent_actors</i>
+                            <span>Applicants</span>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link " href="{% url 'Employees' %}">
+                            <i class="material-icons">wc</i>
+                            <span>Employees</span>
+                          </a>
+                        </li>
+                        {% endif %}
+                       
                         
                         <li class="nav-item">
                           <a class="nav-link " href="{% url 'Report' %}">
                             <i class="material-icons">content_paste</i>
-                            <span> Report</span>
+                            <span>Report</span>
                           </a>
                         </li>
                         <li class="nav-item">
@@ -90,7 +138,6 @@
                             <span>User Profile</span>
                           </a>
                         </li>
-                        
                       </ul>
                     </div>
                   </aside>
