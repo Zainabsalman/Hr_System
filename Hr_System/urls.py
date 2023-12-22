@@ -56,7 +56,10 @@ urlpatterns = [
     path('openings/<int:opening_id>/', views.opening_details, name='opening_details'),
     #path('leave_application/', views.leave_application, name='leave_application'),
     path('openings_no_log/<int:opening_id>/', views.opening_details_no_log, name='opening_details_no_log'),
-     path('userProfile/edit/', views.edit_user_profile, name='edit_applicant_profile'),
-     path('apply_for_leave/', views.apply_for_leave, name='apply_for_leave'),
+    path('userProfile/edit/', views.edit_user_profile, name='edit_applicant_profile'),
+    path('apply_for_leave/', views.apply_for_leave, name='apply_for_leave'),
+    path('announcement/delete/<int:announcement_id>/', views.delete_announcement, name='delete_announcement'),
+    path('approve_applicant_job/<int:applicantjob_id>/', views.approve_applicant_job, name='approve_applicant_job'),
+
 ]
 

@@ -2,7 +2,7 @@ from datetime import timezone
 import os
 from django.utils import timezone
 from django.shortcuts import render,redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.urls import reverse
 from pymongo import MongoClient
 from .models import Announcement, ApplicantJob, Applicants, EmployeeLeave, Employees, EvaluationReview, JobOpenings, Announcement,LeaveRecords, Leaves
@@ -10,7 +10,9 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from .functions import get_user_role, handle_uploaded_file, handle_uploaded_file2
+from .functions import calculate_leave_days, get_user_role, handle_uploaded_file, handle_uploaded_file2
+from django.core.serializers.json import DjangoJSONEncoder
+
 
 from .forms import (
     
@@ -155,18 +157,61 @@ def index(request):
         'dashboard_stats': dashboard_stats,
         'username': username
     }
-    
-    return render(request, 'index.html', context)
+    if hasattr(request.user, 'employees') and request.user.employees.role == 'hr_admin':
+        # User is an HR admin and can view the page
+        return render(request, 'index.html', context)
+    else:
+        # User is not an HR admin
+        # Option 1: Redirect to another page
+        # return redirect('some_other_view')
+
+        # Option 2: Return a 'forbidden' HTTP response
+        return HttpResponseForbidden("You are not authorized to view this page.")
 
 @login_required
 def employee_dashboard(request):
-    employee = request.user.employees
-    if employee.role == 'employee':
-        # Logic for employee dashboard
-        return render(request, 'empDash.html')
-    else:
-        return render(request,  'logIn.html')
+    employee = Employees.objects.get(user=request.user)
+    
+    if employee.role != 'employee':
+        return redirect('login')  # Redirect non-employees
 
+    # Query for the number of announcements
+    total_announcements = Announcement.objects.count()
+
+    # Query for the number of leaves
+    total_leaves = LeaveRecords.objects.filter(employee=employee).count()
+
+    # Query for the number of job openings
+    total_job_openings = JobOpenings.objects.count()
+
+    # Query for the number of applicants
+    total_applicants = Applicants.objects.count()
+
+    # Display job openings
+    job_openings_display = JobOpenings.objects.all()
+
+    # Calculate leave days
+    total_days_taken = calculate_leave_days(employee)
+    remaining_days = 30 - total_days_taken
+
+    context = {
+        'dashboard_stats': {
+            'total_announcements': total_announcements,
+            'total_leaves': total_leaves,
+            'total_job_openings': total_job_openings,
+            'total_applicants': total_applicants,
+            'job_openings': job_openings_display,
+        },
+        'leave_data': {
+            'total_days_taken': total_days_taken,
+            'remaining_days': remaining_days
+        }
+    }
+    if hasattr(request.user, 'employees'):
+        # User is an employee and can view the page
+        return render(request, 'empDash.html', context)
+    else:
+        return HttpResponseForbidden("You are not authorized to view this page.")
 
 @login_required
 def applicant_dashboard(request):
@@ -197,14 +242,29 @@ def applicant_dashboard(request):
         # Get the status of each application
     application_statuses = applicant_jobs.values('status')  # Assuming JobOpenings model has a 'title' field
 
+    job_openings_display = JobOpenings.objects.all()
+
+    # Aggregate job applications by department
+    department_application_counts = ApplicantJob.objects.values(
+        'opening__department__department_name'
+    ).annotate(count=Count('opening__department'))
+
+    # Serialize for JavaScript
+    department_application_counts_json = json.dumps(list(department_application_counts), cls=DjangoJSONEncoder)
+
+
+
     context = {
         'username': username,
         'dashboard_stats': {
+            'job_openings': job_openings_display,
             'total_applied_jobs': applied_jobs_count,
             'total_evaluations': evaluations_count,
             'total_announcements': announcements_count,
             'total_job_openings': job_openings_count,
             'application_statuses': application_statuses,
+            'department_application_counts_json': department_application_counts_json,
+            'department_application_counts': department_application_counts,
         }
     }
 
@@ -345,18 +405,54 @@ def Vaccincies2(request):
     }
     return render(request, "vaccan_no_log.html", context)
 
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from .models import PerformanceReview, EvaluationReview, Employees  # Adjust with your actual model names
+
 @login_required
 def Report(request):
     username = request.user.username
-    employee_reviews = PerformanceReview.objects.all()
-    applicant_reviews = EvaluationReview.objects.all()
+    
+    # Initialize querysets
+    employee_reviews = PerformanceReview.objects.none()
+    applicant_reviews = EvaluationReview.objects.none()
+    
+    # Determine if the user is an HR admin
+    try:
+        employee = Employees.objects.get(user=request.user)
+        is_hr_admin = employee.role == 'hr_admin'
+    except Employees.DoesNotExist:
+        employee = None
+        is_hr_admin = False
+
+    # Fetch all records for HR admin, specific records for others
+    if is_hr_admin:
+        employee_reviews = PerformanceReview.objects.all()
+        applicant_reviews = EvaluationReview.objects.all()
+    else:
+        employee_reviews = PerformanceReview.objects.filter(employee=employee)
+        try:
+            applicant = Applicants.objects.get(user=request.user)
+            applicant_reviews = EvaluationReview.objects.filter(applicant_id=applicant)
+        except Applicants.DoesNotExist:
+            applicant_reviews = EvaluationReview.objects.none()
 
     context = {
-        'username': username,
         'employee_reviews': employee_reviews,
         'applicant_reviews': applicant_reviews,
+        'username': username,
+        'is_hr_admin': is_hr_admin
     }
-    return render(request, "Report.html", context)
+
+    return render(request, 'Report.html', context)
+
+
+
+
 
 @login_required
 def PerformanceReview_detail(request, review_id):
@@ -410,6 +506,8 @@ from .forms import PerformanceReviewForm
 
 @login_required
 def evaluate_employee(request, employee_id): 
+    username = request.user.username
+
     employee = get_object_or_404(Employees, pk=employee_id)
     #reviewer = employee.user  # Assuming request.user.employee is the related Employee instance of the logged-in user
     
@@ -427,8 +525,11 @@ def evaluate_employee(request, employee_id):
     context = {
         'form': form,
         'employee': employee,
+        'username':username
     }
     return render(request, 'EvaluateEmployee.html', context)
+
+
 
 
 #@login_required(login_url='/accounts/login/?next=/apply/')
@@ -514,6 +615,19 @@ def applicant_list(request):
     context = {'applicants': applicants_with_jobs, 'username': username}
     return render(request, 'ApplicationManagement.html', context)
 
+
+@login_required
+def approve_applicant_job(request, applicantjob_id):
+    # Get the ApplicantJob object, or return a 404 if not found
+    applicant_job = get_object_or_404(ApplicantJob, pk=applicantjob_id)
+
+    # Update the status to 'approved'
+    applicant_job.status = 'Approved'
+    applicant_job.save()
+
+    # Redirect back to the applicant list or wherever is appropriate
+    return redirect('applicant_list')
+
 def all_job_openings(request):
     all_openings = JobOpenings.objects.order_by('-date_posted')
     username = request.user.username
@@ -569,7 +683,7 @@ def delete_applicant(request, applicant_id):
 @login_required
 def announcement_list(request):
     username = request.user.username
-    announcements = Announcement.objects.all()
+    announcements = Announcement.objects.order_by('-date_created').all()
     return render(request, 'Discussions.html', {'announcements': announcements, 'username': username})
 
 @login_required
@@ -585,13 +699,33 @@ def create_announcement(request):
             image_path="\img\\announcement_images\{0}".format(request.FILES['image_path'].name)
 
             announcement_obj=Announcement(title=title,content=content,image_path=image_path)
+            announcement_obj = Announcement(
+            title=title,
+            content=content,
+            image_path=image_path,
+            creator=request.user  # Assign the current user as the creator
+        )
             announcement_obj.save()
-
             return redirect('Discussions')
 
     else:
         myForm = AnnouncementForm()
     return render(request, "create_announcement.html", {"myForm": myForm, 'username': username})
+
+
+@login_required
+def delete_announcement(request, announcement_id):
+    announcement = get_object_or_404(Announcement, pk=announcement_id)
+
+    # Check if the user is the creator or an HR admin
+    if request.user == announcement.creator or request.user.groups.filter(name='HR Admin').exists():
+        announcement.delete()
+        messages.success(request, "Announcement deleted successfully.")
+        return redirect('Discussions')
+    else:
+        messages.error(request, "You don't have permission to delete this announcement.")
+        return redirect('Discussions')
+
 
 import xlwt
 

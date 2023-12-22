@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-y5tc9wipyor!eq-q)w$5uxv4w&4%#i-3)++g(gz6prj-e^wkbm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['hrsystem.azurewebsites.net']
+ALLOWED_HOSTS = ['hrsystem.azurewebsites.net', '127.0.0.1']
 
 
 # Application definition
@@ -70,7 +70,8 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         #connecting templates folder to the project
         #'DIRS': [os.path.join(BASE_DIR,"/templates")],
-        'DIRS': ['templates'],
+        # 'DIRS': ['templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

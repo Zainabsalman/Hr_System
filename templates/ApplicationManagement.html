@@ -237,9 +237,10 @@
                             <th scope="col" class="border-bottom-0">ID</th>
                               <th scope="col" class="border-0">Applicant Name</th>
                               <th scope="col" class="border-0">Mobile Number</th>
-                              <th scope="col" class="border-0">Email</th>
+                              <!-- <th scope="col" class="border-0">Email</th> -->
                               <th scope="col" class="border-0">Applied To</th>
-                              <th scope="col" class="border-0">Status</th>
+                              <!-- <th scope="col" class="border-0">Status</th> -->
+                              <th scope="col" class="border-bottom-0">Action</th>
                               <th scope="col" class="border-bottom-0">Action</th>
                               <th scope="col" class="border-bottom-0">Action</th>
                           </tr>
@@ -254,13 +255,13 @@
                               </a>
                           </td>
                             <td>{{ applicant.mobile_number }}</td>
-                            <td>{{ applicant.email }}</td>
+                            <!-- <td>{{ applicant.email }}</td> -->
                             {% if applicant.applied_jobs.exists %}
                                 <td>{{ applicant.applied_jobs.first.opening.job_name }}</td>
-                                <td>{{ applicant.applied_jobs.first.status }}</td>
+                                <!-- <td>{{ applicant.applied_jobs.first.status }}</td> -->
                             {% else %}
                                 <td>N/A</td>
-                                <td>N/A</td>
+
                             {% endif %}
                             {% if applicant.evaluationreview_set.all %}
                                 <td>
@@ -276,8 +277,23 @@
                             <td>
                                 <button type="button" class="btn btn-sm btn-white ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0" onclick="confirmDeletion('{{ applicant.applicant_id }}')">Eliminate</button>
                             </td>
-                        </tr>
-                    {% endfor %}
+                            <td>
+                              {% if applicant.applied_jobs.exists %}
+                              {% with job=applicant.applied_jobs.first %}
+                                  {% if job.status == 'Approved' %}
+                                      <span class="badge badge-success">Approved</span>
+                                  {% else %}
+                                      <a href="{% url 'approve_applicant_job' job.applicantjob_id %}" onclick="return confirm('Are you sure you want to approve this application?');">
+                                          <button type="button" class="btn btn-sm btn-success ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0">Approve</button>
+                                      </a>
+                                  {% endif %}
+                              {% endwith %}
+                          {% else %}
+                              <span>N/A</span>
+                          {% endif %}
+                      </td>
+                  </tr>
+              {% endfor %}
 
                     </tbody>
                     </table>

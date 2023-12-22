@@ -243,10 +243,22 @@
                     <div class="col">
                         <form method="post" action="{% url 'apply_for_leave' %}">
                             {% csrf_token %}
+                            {% if form.errors %}
+                                <div class="alert alert-danger">
+                                    <strong>Error!</strong> Please correct the following errors:
+                                    <ul>
+                                        {% for field in form %}
+                                            {% for error in field.errors %}
+                                                <li>{{ field.label_tag }}: {{ error }}</li>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
                         
                             <div class="form-row">
                                 <!-- Leave Type Field -->
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-12">
                                     <label for="id_leave">Leave Type</label>
                                     <select class="form-control" id="id_leave" name="leave">
                                         {% for leave in leave_choices %}
