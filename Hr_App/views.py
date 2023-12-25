@@ -44,7 +44,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Applicants, Employees  # Make sure to import your models
 
+
 def custom_login(request):
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -81,9 +83,11 @@ from django.contrib.auth.decorators import login_required
 from .models import Applicants, JobOpenings, Employees, Announcement, LeaveRecords, ApplicantJob  # Import your models
 import json
 from django.core.serializers.json import DjangoJSONEncoder
+from django.views.decorators.csrf import csrf_protect
 
 
 @login_required
+
 def index(request):
     today = timezone.now()
     current_year, current_month = today.year, today.month
@@ -169,6 +173,7 @@ def index(request):
         return redirect('login')
 
 @login_required
+
 def employee_dashboard(request):
     employee = Employees.objects.get(user=request.user)
     
@@ -276,6 +281,7 @@ def employees_list(request):
     employees = Employees.objects.all()
     return render(request, 'Employees.html', {'username': username, 'employees': employees})
 
+
 @login_required
 def ApplicationManagement(request):
     username = request.user.username
@@ -350,6 +356,7 @@ def opening_details_no_log(request, opening_id):
 #     return render(request, template_name, context)
 
 @login_required
+@csrf_protect
 def edit_user_profile(request):
     context = {}
     context['username'] = request.user.username
@@ -478,6 +485,7 @@ def EvaluateEmployee(request):
     return render(request, "EvaluateEmployee.html", {'username': username})
 
 @login_required
+@csrf_protect
 def EvaluateApplicant(request, applicant_id):
     username = request.user.username
     applicant = get_object_or_404(Applicants, pk=applicant_id)
