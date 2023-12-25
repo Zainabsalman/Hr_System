@@ -28,6 +28,8 @@ SECRET_KEY = 'django-insecure-y5tc9wipyor!eq-q)w$5uxv4w&4%#i-3)++g(gz6prj-e^wkbm
 DEBUG = True
 
 ALLOWED_HOSTS = ['hrsystem.azurewebsites.net', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net','https://hrsystem.azurewebsites.net']
+
 
 
 # Application definition
