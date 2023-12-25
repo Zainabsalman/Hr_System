@@ -166,7 +166,7 @@ def index(request):
         # return redirect('some_other_view')
 
         # Option 2: Return a 'forbidden' HTTP response
-        return HttpResponseForbidden("You are not authorized to view this page.")
+        return redirect('login')
 
 @login_required
 def employee_dashboard(request):

@@ -96,7 +96,7 @@ DATABASES = {
         'ENGINE': 'djongo',
         'NAME': 'HrSystem',
         'CLIENT':{
-            'host':'mongodb://localhost:27017'
+            'host':'mongodb+srv://zainab:Spongebob3321%40@cluster0.cyqdbum.mongodb.net/'
         }
     }
 }

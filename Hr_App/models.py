@@ -61,31 +61,7 @@ class Employees(models.Model):
         return self.name
 
 
-class EmployeeProfile(models.Model):
-    employee = models.OneToOneField(Employees, on_delete=models.CASCADE)
-    department = models.CharField(max_length=255)
-    job_title = models.CharField(max_length=255)
-    profile_picture = models.ImageField(upload_to='profile_pictures/')
 
-    def __str__(self):
-        return self.employee.name
-
-
-class ChatMessage(models.Model):
-    employee = models.OneToOneField(Employees, on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    content = models.TextField()
-
-    def __str__(self):
-        return f"{self.user.username} at {self.timestamp}"
-
-class Chat(models.Model):
-    name = models.CharField(max_length=255)
-    participants = models.ManyToManyField(Employees)
-    messages = models.ManyToManyField(ChatMessage)
-
-    def __str__(self):
-        return self.name
 
 class Announcement(models.Model):
     title = models.CharField(max_length=100)
@@ -126,27 +102,6 @@ class EmployeePerformanceReview(models.Model):
 
     def __str__(self):
         return self.employee
-    
-class Qualifications(models.Model):
-    qualification_id = models.AutoField(primary_key=True, max_length=255)
-    degree = models.CharField(max_length=255)
-    institute = models.CharField(max_length=255)
-    graduation_year = models.CharField(max_length=4)
-    specialization = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.degree
-
-
-
-class Benefits(models.Model):
-    benefit_id = models.AutoField(primary_key=True, max_length=255)
-    name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
-
 
 
 class SalaryGrades(models.Model):
@@ -268,24 +223,7 @@ class EvaluationReview(models.Model):
 
 
 
-class ReportDepartment(models.Model):
-    report_department_id = models.AutoField(primary_key=True, max_length=255)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    report = models.ForeignKey(Reports, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.department
-
-
-
-
-class EmployeeQualification(models.Model):
-    employee_qualification_id = models.AutoField(primary_key=True, max_length=255)
-    qualification = models.ForeignKey(Qualifications, on_delete=models.CASCADE)
-    employee = models.ForeignKey(Employees, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.employee
     
 
 class LeaveRecords(models.Model):
@@ -299,22 +237,3 @@ class LeaveRecords(models.Model):
     def __str__(self):
         return self.employee
     
-
-class EmployeeBenefits(models.Model):
-    employee_benefit_id = models.AutoField(primary_key=True, max_length=255)
-    employee = models.ForeignKey(Employees, on_delete=models.CASCADE)
-    benefit = models.ForeignKey(Benefits, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.employee
-    
-
-#class Person(models.Model):
-    # first_name = models.CharField(max_length=30)
-    # last_name = models.CharField(max_length=30)
-    # email = models.EmailField(max_length=254)
-
-#how to use an instance of ur object 
-#person = Person(first_name='John', last_name='Doe', email='john.doe@example.com')
-#person.save()
-
