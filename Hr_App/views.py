@@ -597,7 +597,7 @@ def signup(request):
         applicants_form = SignUpForm()
         user_form = UserSignUpForm()
     
-    return render(request, 'signup.html', {'applicants_form': applicants_form, 'user_form': user_form})
+    return render(request, 'signUp.html', {'applicants_form': applicants_form, 'user_form': user_form})
 
 #view to get all applicant data
 #def applicant_list(request, applicant_id=None):
