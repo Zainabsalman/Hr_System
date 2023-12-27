@@ -123,9 +123,9 @@ def index(request):
     ).order_by('-total_applications')[:5]  # Top 5 jobs
 
     # Other context data
-    applicants = Applicants.objects.all()
-    job_openings = JobOpenings.objects.all()
-    all_employees = Employees.objects.all()
+    applicants = Applicants.objects.all().order_by('-applicant_id')
+    job_openings = JobOpenings.objects.all().order_by('-date_posted')
+    all_employees = Employees.objects.all().order_by('-employee_id')
     discussions = Announcement.objects.all()
     leaves = LeaveRecords.objects.all()
 
@@ -175,6 +175,7 @@ def index(request):
 @login_required
 
 def employee_dashboard(request):
+    username = request.user.username
     employee = Employees.objects.get(user=request.user)
     
     if employee.role != 'employee':
@@ -210,7 +211,8 @@ def employee_dashboard(request):
         'leave_data': {
             'total_days_taken': total_days_taken,
             'remaining_days': remaining_days
-        }
+        },
+        'username': username  # Pass the username to the template
     }
     if hasattr(request.user, 'employees'):
         # User is an employee and can view the page
@@ -279,7 +281,26 @@ def applicant_dashboard(request):
 def employees_list(request):
     username = request.user.username
     employees = Employees.objects.all()
-    return render(request, 'Employees.html', {'username': username, 'employees': employees})
+
+    # Set up pagination
+    paginator = Paginator(employees, 10)  # Show 10 employees per page
+
+    page = request.GET.get('page')
+    try:
+        employees_page = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        employees_page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range, deliver last page of results.
+        employees_page = paginator.page(paginator.num_pages)
+
+    context = {
+        'username': username,
+        'employees': employees_page  # Now this is a paginated queryset
+    }
+
+    return render(request, 'Employees.html', context)
 
 
 @login_required
@@ -302,8 +323,10 @@ def employee_details(request, employee_id):
 
 @login_required
 def opening_details(request, opening_id):
+    username = request.user.username
+
     opening = get_object_or_404(JobOpenings, pk=opening_id)
-    context = {'opening': opening}
+    context = {'opening': opening, 'username': username}
     return render(request, 'opening_details.html', context)
 
 def opening_details_no_log(request, opening_id):
@@ -311,49 +334,6 @@ def opening_details_no_log(request, opening_id):
     context = {'opening': opening}
     return render(request, 'opening_details_no_log.html', context)
 
-#@login_required
-#def userProfile(request):
-#    user_profile = Applicants.objects.filter(user=request.user).first()
-#    return render(request, "userProfile.html", {'user_profile': user_profile})
-
-
-# @login_required
-# def edit_user_profile(request):
-#     context = {}
-#       # Adding username to the context
-#     context['username'] = request.user.username
-#     if hasattr(request.user, 'applicants'):
-#         profile = get_object_or_404(Applicants, user=request.user)
-#         form_class = ApplicantForm
-#         template_name = 'edit_applicant_profile.html'
-
-#         # Adding applicant's name to the context
-#         context['profile_name'] = profile.name
-
-#     elif hasattr(request.user, 'employees'):
-#         profile = get_object_or_404(Employees, user=request.user)
-#         form_class = EmployeeForm
-#         template_name = 'edit_employee_profile.html'
-
-#         # Adding employee's name and job title to the context
-#         context['profile_name'] = profile.name
-#         context['employee_job'] = profile.job.name  # Assuming 'job' is a ForeignKey and has a 'name' field
-#         context['department_name'] = profile.department.department_name  # Assuming 'department' has a 'department_name' field
-#         context['location_city'] = profile.location.city  # Assuming 'location' has a 'city' field
-#     else:
-#         # Handle case where the user is neither Applicant nor Employee
-#         return redirect('some_default_view')
-
-#     if request.method == 'POST':
-#         form = form_class(request.POST, instance=profile)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('userProfile')  # Redirect to a profile view or other
-#     else:
-#         form = form_class(instance=profile)
-
-#     context['form'] = form
-#     return render(request, template_name, context)
 
 @login_required
 @csrf_protect
@@ -400,13 +380,25 @@ def Vaccincies(request):
         'username': username,
         'user_role': user_role
         }
-        # ... your existing context variables ...
 
     return render(request, "Vaccincies.html", context)
 
 
 def Vaccincies2(request):
     all_openings = JobOpenings.objects.order_by('-date_posted')
+
+    paginator = Paginator(all_openings, 10) # Show 10 job openings per page
+
+    page = request.GET.get('page')
+    try:
+        all_openings = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        all_openings = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        all_openings = paginator.page(paginator.num_pages)
+
     context = {
         'all_openings': all_openings,
     }
@@ -599,16 +591,7 @@ def signup(request):
     
     return render(request, 'signUp.html', {'applicants_form': applicants_form, 'user_form': user_form})
 
-#view to get all applicant data
-#def applicant_list(request, applicant_id=None):
- #   if applicant_id:
-  #      applicant = Applicants.objects.get(pk=applicant_id)
-   #     return render(request, 'ApplicationManagement.html', {'applicant': applicant})
-    #else:
-     #   applicants = Applicants.objects.all()
-      #  username = request.user.username
-       # context = {'applicants': applicants, 'username': username}
-        #return render(request, 'ApplicationManagement.html', context)
+
     
 from django.db.models import Prefetch
 
@@ -620,7 +603,25 @@ def applicant_list(request):
     ).order_by('-applied_jobs__application_date')
     
     username = request.user.username
-    context = {'applicants': applicants_with_jobs, 'username': username}
+    
+    # Set up pagination - adjust the number per page as needed
+    paginator = Paginator(applicants_with_jobs, 10)  # Show 10 applicants per page
+
+    page = request.GET.get('page')
+    try:
+        applicants = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        applicants = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g., too high), deliver last page of results.
+        applicants = paginator.page(paginator.num_pages)
+
+    context = {
+        'applicants': applicants,  # Now this is a paginated queryset
+        'username': username
+    }
+    
     return render(request, 'ApplicationManagement.html', context)
 
 
@@ -636,8 +637,22 @@ def approve_applicant_job(request, applicantjob_id):
     # Redirect back to the applicant list or wherever is appropriate
     return redirect('applicant_list')
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def all_job_openings(request):
     all_openings = JobOpenings.objects.order_by('-date_posted')
+
+    paginator = Paginator(all_openings, 10) # Show 10 job openings per page
+
+    page = request.GET.get('page')
+    try:
+        all_openings = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        all_openings = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        all_openings = paginator.page(paginator.num_pages)
+
     username = request.user.username
     context = {'all_openings': all_openings, 'username': username}
     return render(request, 'Vaccincies.html', context)
@@ -679,12 +694,10 @@ def delete_vacancy(request, opening_id):
     return redirect('/Vaccincies')
 
 @login_required
-def delete_applicant(request, applicant_id):
+def delete_applicant_job(request, applicantjob_id):
     # Fetch the applicant instance to be deleted
-    applicant = get_object_or_404(Applicants, applicant_id=applicant_id)
-    
-    # Delete the applicant instance
-    applicant.delete()
+    applicant_job = ApplicantJob.objects.get(applicantjob_id=applicantjob_id)
+    applicant_job.delete()
     
     return redirect('/ApplicationManagement')
 
@@ -692,7 +705,26 @@ def delete_applicant(request, applicant_id):
 def announcement_list(request):
     username = request.user.username
     announcements = Announcement.objects.order_by('-date_created').all()
-    return render(request, 'Discussions.html', {'announcements': announcements, 'username': username})
+
+    # Set up pagination - 8 announcements per page
+    paginator = Paginator(announcements, 8)
+
+    page = request.GET.get('page')
+    try:
+        announcements_page = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        announcements_page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        announcements_page = paginator.page(paginator.num_pages)
+
+    context = {
+        'username': username,
+        'announcements': announcements_page  # Now this is a paginated queryset
+    }
+
+    return render(request, 'Discussions.html', context)
 
 @login_required
 def create_announcement(request):
@@ -871,6 +903,18 @@ def leaves_view(request):
         applied_leaves = LeaveRecords.objects.all()
     else:
         applied_leaves = LeaveRecords.objects.filter(employee=employee)
+
+    # Set up pagination
+    paginator = Paginator(applied_leaves, 10)  # Show 10 leaves per page
+    page = request.GET.get('page')
+    try:
+        applied_leaves = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        applied_leaves = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        applied_leaves = paginator.page(paginator.num_pages)
 
     context = {
         'applied_leaves': applied_leaves,

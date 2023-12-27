@@ -27,9 +27,7 @@ SECRET_KEY = 'django-insecure-y5tc9wipyor!eq-q)w$5uxv4w&4%#i-3)++g(gz6prj-e^wkbm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net','https://hrsystem.azurewebsites.net']
-
+ALLOWED_HOSTS = ['hrsystem.azurewebsites.net', '127.0.0.1']
 
 
 # Application definition
@@ -57,7 +55,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -99,7 +96,7 @@ DATABASES = {
         'ENGINE': 'djongo',
         'NAME': 'HrSystem',
         'CLIENT':{
-            'host':'mongodb+srv://zainab:Spongebob3321%40@cluster0.cyqdbum.mongodb.net/'
+            'host':'mongodb://localhost:27017'
         }
     }
 }
