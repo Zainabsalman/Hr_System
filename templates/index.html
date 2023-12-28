@@ -382,7 +382,7 @@
               
                
               <!-- Top Referrals Component -->
-    <div class="col-lg-6 col-md-12 col-sm-12 mb-4" style="margin-left: 666px; margin-top:-344px;">
+    <div class="col-lg-6 col-md-12 col-sm-12 mb-4" style="margin-left: 666px; margin-top:-384px;">
       <div class="card card-small">
                   <div class="card-header border-bottom">
                     <h6 class="m-0">Recenet Job Openings</h6>
@@ -390,7 +390,7 @@
                 <div class="card-body p-0">
                     <ul class="list-group list-group-small list-group-flush">
                         {% for job_opening in job_openings %}
-                        {% if forloop.counter <= 5 %}
+                        {% if forloop.counter <= 6 %}
                         <li class="list-group-item d-flex px-3">
                             <span class="text-semibold text-fiord-blue">{{ job_opening.job }}</span>
                             <span class="ml-auto text-right text-semibold text-reagent-gray">{{ job_opening.date_posted }}</span>

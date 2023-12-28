@@ -61,5 +61,7 @@ urlpatterns = [
     path('announcement/delete/<int:announcement_id>/', views.delete_announcement, name='delete_announcement'),
     path('approve_applicant_job/<int:applicantjob_id>/', views.approve_applicant_job, name='approve_applicant_job'),
 
+
+
 ]
 

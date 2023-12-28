@@ -2,7 +2,7 @@ from datetime import timezone
 import os
 from django.utils import timezone
 from django.shortcuts import render,redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.urls import reverse
 from pymongo import MongoClient
 from .models import Announcement, ApplicantJob, Applicants, EmployeeLeave, Employees, EvaluationReview, JobOpenings, Announcement,LeaveRecords, Leaves
@@ -346,6 +346,11 @@ def edit_user_profile(request):
         form_class = ApplicantForm
         template_name = 'edit_applicant_profile.html'
         context['profile_name'] = profile.name
+         # Use the 'applied_jobs' related name to fetch related ApplicantJob instances
+        applicant_jobs = profile.applied_jobs.all()
+        context['applied_jobs'] = applicant_jobs
+         # Get URLs of uploaded CVs
+        context['cv_urls'] = [settings.STATIC_URL + 'cvs/' + os.path.basename(job.cv.name) for job in applicant_jobs if job.cv]
 
     elif hasattr(request.user, 'employees'):
         profile = get_object_or_404(Employees, user=request.user)
@@ -554,7 +559,7 @@ def apply(request, opening_id=None):
                     applicant_job.cv ="\cvs\{0}".format(request.FILES['cv'].name)
 
                 applicant_job.save()
-                return redirect('ApplicationManagement')
+                return redirect('edit_applicant_profile')#changeeeeee 
         else:
             form = ApplicantJobForm()
         
@@ -695,11 +700,12 @@ def delete_vacancy(request, opening_id):
 
 @login_required
 def delete_applicant_job(request, applicantjob_id):
-    # Fetch the applicant instance to be deleted
-    applicant_job = ApplicantJob.objects.get(applicantjob_id=applicantjob_id)
-    applicant_job.delete()
-    
-    return redirect('/ApplicationManagement')
+    try:
+        applicant_job = ApplicantJob.objects.get(applicantjob_id=applicantjob_id)
+        applicant_job.delete()
+        return redirect('/ApplicationManagement')
+    except ApplicantJob.DoesNotExist:
+        raise Http404("No ApplicantJob matches the given query.")
 
 @login_required
 def announcement_list(request):
@@ -924,3 +930,4 @@ def leaves_view(request):
     }
 
     return render(request, 'Leaves.html', context)
+

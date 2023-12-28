@@ -68,8 +68,9 @@
                   <span>Dashboard</span>
                 </a>
               </li>
+          
               {% endif %}
-
+          
               {% if user_role == 'employee' %}
               <li class="nav-item">
                 <a class="nav-link " href="{% url 'employee_dashboard' %}">
@@ -306,14 +307,14 @@
                       <div class="col-12 col-sm-6">
                   
                       </div>
-                      <div class="col-12 col-sm-6 d-flex mb-2 mb-sm-0">
+                      <!-- <div class="col-12 col-sm-6 d-flex mb-2 mb-sm-0">
                         <a> <a href="{% url 'ApplicationManagement' %}"  type="button" class="btn btn-sm btn-white ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0">View All Applicants &rarr;</button>
                          </a>  
-                          </div>
+                          </div> -->
                            
                     </div>
                     <div class="card-body p-0">
-                      <canvas id="myChart" width="200" height="78"></canvas>
+                      <canvas id="myChart" width="200" height="88"></canvas>
                           
                       </div>
                   

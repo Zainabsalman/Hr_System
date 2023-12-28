@@ -191,28 +191,31 @@
             <!-- Default Light Table -->
             <div class="row">
               <div class="col-lg-4">
-                <div class="card card-small mb-4 pt-3">
+                <div class="card card-small mb-4 ">
                   <div class="card-header border-bottom text-center">
                    <br>
                     <h4 class="mb-0">{{ profile_name }}</h4>
-                    {% if employee_job %}
-                        <span class="text-muted d-block mb-2">{{ employee_job }}</span>
-                    {% endif %}
                     <br>
                   </div>
                   <ul class="list-group list-group-flush">
-                    <li class="list-group-item px-1">
-                      
                     </li>
-                    <li class="list-group-item p-4">
-                        <strong class="text-muted d-block mb-2">About This Page</strong>
-                        
-                        <span>This page is your personal profile hub, where you have the flexibility to view and 
-                            update your essential information. Here, you can manage various aspects of your profile, 
-                            including personal details  Remember to save any 
-                             modifications you make to ensure your profile is always up-to-date. This page is integral for maintaining 
-                             your professional identity and ensuring seamless communication within the organization.</span>
-                        
+                    <li class="list-group-item ">
+                      <h6 class="m-0 text-center">Applicant CV</h6>
+                      <li class="list-group-item p-4">
+                         
+                            <!-- Display cv -->
+                            <div class="form-group col-md-12">
+                              {% for cv_url in cv_urls %}
+                                  {% if forloop.last %}
+                                      <!-- Display only the first CV in an iframe -->
+                                      <iframe src="{{ cv_url }}" style="width:115%; height:230px; margin-top: -15px; margin-left: -15px;" frameborder="0"></iframe>
+                                      <!-- Provide a download link for the first CV -->
+                                      <a href="{{ cv_url }}" download="CV_{{ applicant.name|slugify }}" class="btn btn-outline-secondary form-control mt-2">Download CV</a>
+                                  {% endif %}
+                              {% empty %}
+                                  <p>No CV has been uploaded.</p>
+                              {% endfor %}
+                          </div>
                         
                   </ul>
                 </div>
@@ -244,7 +247,7 @@
                                                 {{ form.mobile_number|add_class:"form-control" }}
                                             </div>
                                         </div>
-          
+          <br>
                                         <div class="form-row">
                                             <!-- Date of Birth Field -->
                                             <div class="form-group col-md-6">
@@ -258,7 +261,22 @@
                                                 {{ form.email|add_class:"form-control" }}
                                             </div>
                                         </div>
+                                        <br>
+                                        <div class="form-row">
+                                          <div class="form-group col-md-12">
+                                            <label for="applied_jobs">Applied Jobs</label>
+                                            {% for job in applied_jobs %}
+                                            <input type="text" class="form-control" value="{{ job.opening.job_name }}" disabled>
+                                        {% empty %}
+                                            <input type="text" class="form-control" value="No applied jobs." disabled>
+                                        {% endfor %}
+                                    
+
+                                        </div>
                                         
+
+                                        </div>
+                                        <br>
                                         <!-- Submit Button -->
                                         <button type="submit" class="btn btn-accent">Update Account</button>
                                     </form>
