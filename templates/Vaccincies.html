@@ -183,13 +183,12 @@
                 <span class="text-uppercase page-subtitle">Overview</span>
                 <h3 class="page-title">Vacancies</h3>
                 {% if user_role == 'hr_admin' %}
-                <a href="{% url 'addVacancy' %}" class="btn btn-sm btn-outline-accent"  style="margin-left: 815px; margin-top: -50px;">Add a New Job Opening </a>
+                <a href="{% url 'addVacancy' %}" class="btn btn-sm btn-outline-accent"  style="margin-left: 845px; margin-top: -50px;">Add a New Job Opening </a>
               {% endif %}
               </div>
             </div>
             <!-- End Page Header -->
-            <!-- End Default Light Table -->
-            <!-- Default Dark Table -->
+
             <div class="row">
               <div class="col">
                 <div class="card card-small overflow-hidden mb-4">
@@ -228,7 +227,6 @@
                             {% if user_role == 'applicant' %}
                             <td>
                               <a href="{% url 'apply_to_job' opening.opening_id %}">
-                              
                                 <button type="button" class="btn btn-sm btn-white ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0 apply-button" data-opening-id="{{ opening.opening_id }}">Apply</button>
                             </a>
                               </td>

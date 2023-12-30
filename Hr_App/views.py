@@ -228,7 +228,7 @@ def applicant_dashboard(request):
         # Redirect to login or handle unauthenticated user
         pass
 
-     # Get the Applicants instance for the logged-in user
+    # Get the Applicants instance for the logged-in user
     applicant = Applicants.objects.get(user=request.user)
     # Query for the number of applied jobs for the logged-in applicant
     applied_jobs_count = ApplicantJob.objects.filter(applicant_id=applicant).count()
@@ -246,7 +246,7 @@ def applicant_dashboard(request):
     # Query for the applicant's job applications
     applicant_jobs = ApplicantJob.objects.filter(applicant_id=applicant)
 
-        # Get the status of each application
+    # Get the status of each application
     application_statuses = applicant_jobs.values('status')  # Assuming JobOpenings model has a 'title' field
 
     job_openings_display = JobOpenings.objects.all()
@@ -258,8 +258,6 @@ def applicant_dashboard(request):
 
     # Serialize for JavaScript
     department_application_counts_json = json.dumps(list(department_application_counts), cls=DjangoJSONEncoder)
-
-
 
     context = {
         'username': username,
@@ -453,9 +451,6 @@ def Report(request):
     }
 
     return render(request, 'Report.html', context)
-
-
-
 
 
 @login_required

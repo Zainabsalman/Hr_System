@@ -192,35 +192,35 @@
                 <div class="card card-small mb-3">
                     <!--add form -->
                     <div class="card-body">
-                      <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        <div>
-                            <label for="id_application_date">Application Date:</label>
-                            <input type="text" class="form-control form-control-lg mb-3" type="date" name="application_date" id="id_application_date" value="{{ form.instance.application_date|date:'Y-m-d' }}" readonly>
-                            {% if form.application_date.errors %}
-                                <span class="error">{{ form.application_date.errors }}</span>
-                            {% endif %}
-                        </div>
-                    
-                        <div>
-                            <label for="id_reason_for_hire">Reason for Hire:</label>
-                            <textarea name="reason_for_hire" class="form-control form-control-lg mb-3" id="id_reason_for_hire" cols="30" rows="5"></textarea>
-                            {% if form.reason_for_hire.errors %}
-                                <span class="error">{{ form.reason_for_hire.errors }}</span>
-                            {% endif %}
-                        </div>
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
 
-                        <div>
-                          <label for="id_cv">Upload CV:</label>
-                          <input type="file" class="form-control form-control-lg mb-3" name="cv" id="id_cv">
-                          {% if form.cv.errors %}
-                              <span class="error">{{ form.cv.errors }}</span>
-                          {% endif %}
-                      </div>
-                    
-                        <input type="submit" class="btn btn-accent" value="Apply">
-                    </form>
+<div>
+<label for="id_application_date">Application Date:</label>
+<input type="text" class="form-control form-control-lg mb-3" type="date" name="application_date" id="id_application_date" value="{{ form.instance.application_date|date:'Y-m-d' }}" readonly>
+{% if form.application_date.errors %}
+<span class="error">{{ form.application_date.errors }}</span>
+{% endif %}
+</div>
+
+<div>
+<label for="id_reason_for_hire">Reason for Hire:</label>
+<textarea name="reason_for_hire" class="form-control form-control-lg mb-3" id="id_reason_for_hire" cols="30" rows="5"></textarea>
+{% if form.reason_for_hire.errors %}
+<span class="error">{{ form.reason_for_hire.errors }}</span>
+{% endif %}
+</div>
+
+<div>
+<label for="id_cv">Upload CV:</label>
+<input type="file" class="form-control form-control-lg mb-3" name="cv" id="id_cv">
+{% if form.cv.errors %}
+<span class="error">{{ form.cv.errors }}</span>
+{% endif %}
+</div>
+
+<input type="submit" class="btn btn-accent" value="Apply">
+</form>
                 </div>
               </div>
                <!--end add form -->

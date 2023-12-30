@@ -12,9 +12,6 @@ from Hr_App import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    #path('', views.applicant_list_dash, name='applicant_list_dash'),
-    #path('signup/', views.signUp, name='signUp'),
-    # path('login/', views.login, name='logIn'),
     path('accounts/login/', views.custom_login, name='logIn'),
     path('admin/', admin.site.urls),
     path('Discussions/', views.announcement_list, name='Discussions'),
@@ -36,11 +33,8 @@ urlpatterns = [
         template_name='logIn.html',
         success_url='/',  # Set the success URL to '/' (index page)
     ), name='login'),
-    #path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    # path('vaccan_no_log/', views.all_job_openings, name='all_job_openings'),
     path('vaccan_no_log/', views.Vaccincies2, name='Vaccincies2'),
     path('logout/', views.logout_view, name='logout'),
-    #path('EvaluateApplicant/', views.EvaluateApplicant, name='EvaluateApplicant'),
     path('EvaluateApplicant/<int:applicant_id>/', views.EvaluateApplicant, name='EvaluateApplicant'),
     path('deleteApplicantJob/<int:applicantjob_id>/', views.delete_applicant_job, name='delete_applicant_job'),
     path('evaluate_employee/<int:employee_id>/', views.evaluate_employee, name='evaluate_employee'),
@@ -54,14 +48,11 @@ urlpatterns = [
     path('evaluationreviews/<int:review_id>/', views.evaluationreview_detail, name='evaluationreview_detail'),
     path('evaluations/<int:review_id>/', views.PerformanceReview_detail, name='PerformanceReview_detail'),
     path('openings/<int:opening_id>/', views.opening_details, name='opening_details'),
-    #path('leave_application/', views.leave_application, name='leave_application'),
     path('openings_no_log/<int:opening_id>/', views.opening_details_no_log, name='opening_details_no_log'),
     path('userProfile/edit/', views.edit_user_profile, name='edit_applicant_profile'),
     path('apply_for_leave/', views.apply_for_leave, name='apply_for_leave'),
     path('announcement/delete/<int:announcement_id>/', views.delete_announcement, name='delete_announcement'),
     path('approve_applicant_job/<int:applicantjob_id>/', views.approve_applicant_job, name='approve_applicant_job'),
-
-
 
 ]
 

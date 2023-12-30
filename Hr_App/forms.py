@@ -9,7 +9,6 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
-
     
 class SignUpForm(forms.ModelForm):
     dob = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
@@ -61,19 +60,6 @@ class EvaluationReviewForm(forms.ModelForm):
                 self.fields['applicant_id'].initial = instance.pk                
 
 
-    #def __init__(self, *args, **kwargs):
-     #   instance = kwargs.get('instance')
-      #  super().__init__(*args, **kwargs)
-       # if instance:
-        #    self.fields['applicant_id'].queryset = Applicants.objects.filter(pk=instance.pk)
-
-         #   self.fields['applicant_id'].initial = applicant.pk
-          #  self.fields['applicant_name'].initial = applicant.name
-           # self.fields['applicant_email'].initial = applicant.email
-            #self.fields['applicant_dob'].initial = applicant.dob
-            #self.fields['applicant_mobile_number'].initial = applicant.mobile_number
-
-
 class VacancyForm(forms.ModelForm):
     class Meta:
         model = JobOpenings
@@ -97,7 +83,6 @@ class VacancyForm(forms.ModelForm):
 
         return cleaned_data
   
-
 
 class ApplicantJobForm(forms.ModelForm):
     class Meta:

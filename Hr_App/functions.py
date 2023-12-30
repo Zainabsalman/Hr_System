@@ -2,8 +2,6 @@ from .models import Applicants, Employees,LeaveRecords
 from datetime import date
 from django.db.models import Sum, F, ExpressionWrapper, fields
 
-
-
 def handle_uploaded_file(file):
     with open('static/img/announcement_images/'+file.name, 'wb+') as destination:
         for chunk in file.chunks():
@@ -24,7 +22,6 @@ def get_user_role(user):
         return 'applicant'
     
     return 'guest'
-
 
 
 def calculate_leave_days(employee):

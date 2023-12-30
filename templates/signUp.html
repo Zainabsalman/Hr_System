@@ -75,51 +75,43 @@
                 <div class="card" style="width: 500px; height: 610px; margin-top: 20px" >
                   <div class="card-body" style="width: 500px; height: 500px;">
                    
-                    <h5 class="auth-form__title text-center mb-4">Create New Applicant Account</h5>
-                    <form method="post" >
-                      {% csrf_token %}
-                      <div style="margin-top: -20px;"> 
-                      <!-- Name -->
-                      <label for="id_name" style="font-size: 12px;">Name:</label>
-                      <input class="form-control form-control-lg mb-3" style="height: 15px;" type="text" id="id_name" name="name">
-                      
-                      <!-- Mobile Number -->
-                      <label for="id_mobile_number"  style="font-size: 12px;">Mobile number:</label>
-                      <input class="form-control form-control-lg mb-3" style="height: 15px;" type="text" id="id_mobile_number" name="mobile_number" pattern="[0-9]{8}" title="Please enter 8 digits">
-                      
-                      
-                      <!-- Date of Birth -->
-                      <label for="id_dob"  style="font-size: 12px;">Dob:</label>
-                      <input class="form-control form-control-lg mb-3" style="height: 15px;" type="date" id="id_dob" name="dob">
-                    
-                      
-                      <!-- Email -->
-                      <label for="id_email"  style="font-size: 12px;">Email:</label>
-                      <input class="form-control form-control-lg mb-3" style="height: 15px;"  type="email" id="id_email" name="email">
-                      
-                      
-                      <!-- Username -->
-                      <label for="id_username"  style="font-size: 12px;">Username:</label>
-                      <input class="form-control form-control-lg mb-3" style="height: 15px;"  type="text" id="id_username" name="username" pattern="[A-Za-z0-9_]{1,150}" >
-                      
-                    
-                      
-                      <!-- Password -->
-                      <label for="id_password1"  style="font-size: 12px;">Password:</label>
-                      <input class="form-control form-control-lg mb-3" style="height: 15px;"  type="password" id="id_password1" name="password1"  >
-                 
-                      
-                      <!-- Password Confirmation -->
-                      <label for="id_password2"  style="font-size: 12px;">Password confirmation:</label>
-                      <input class="form-control form-control-lg mb-3" style="height: 15px;"  type="password" id="id_password2" name="password2">
-                     <div class="auth-form__meta d-flex mt-4" >
-                  <a class="ml-auto" href="{% url 'login' %}">Sign In?</a>
+                <h5 class="auth-form__title text-center mb-4">Create New Applicant Account</h5>
+                <form method="post" >
+                  {% csrf_token %}
+                  <div style="margin-top: -20px;"> 
+                  <!-- Name -->
+                  <label for="id_name" style="font-size: 12px;">Name:</label>
+                  <input class="form-control form-control-lg mb-3" style="height: 15px;" type="text" id="id_name" name="name">
+                  
+                  <!-- Mobile Number -->
+                  <label for="id_mobile_number"  style="font-size: 12px;">Mobile number:</label>
+                  <input class="form-control form-control-lg mb-3" style="height: 15px;" type="text" id="id_mobile_number" name="mobile_number" pattern="[0-9]{8}" title="Please enter 8 digits">
+                  
+                  <!-- Date of Birth -->
+                  <label for="id_dob"  style="font-size: 12px;">Dob:</label>
+                  <input class="form-control form-control-lg mb-3" style="height: 15px;" type="date" id="id_dob" name="dob">
+                
+                  <!-- Email -->
+                  <label for="id_email"  style="font-size: 12px;">Email:</label>
+                  <input class="form-control form-control-lg mb-3" style="height: 15px;"  type="email" id="id_email" name="email">
+                  
+                  <!-- Username -->
+                  <label for="id_username"  style="font-size: 12px;">Username:</label>
+                  <input class="form-control form-control-lg mb-3" style="height: 15px;"  type="text" id="id_username" name="username" pattern="[A-Za-z0-9_]{1,150}" >
+                  
+                  <!-- Password -->
+                  <label for="id_password1"  style="font-size: 12px;">Password:</label>
+                  <input class="form-control form-control-lg mb-3" style="height: 15px;"  type="password" id="id_password1" name="password1"  >
+                  
+                  <!-- Password Confirmation -->
+                  <label for="id_password2"  style="font-size: 12px;">Password confirmation:</label>
+                  <input class="form-control form-control-lg mb-3" style="height: 15px;"  type="password" id="id_password2" name="password2">
+                  <div class="auth-form__meta d-flex mt-4" >
+              <a class="ml-auto" href="{% url 'login' %}">Sign In?</a>
+            </div>
+                  <button class="btn btn-accent" type="submit" style="margin-left: 1px; margin-top: -70px; height: 35px;">Sign Up</button>
                 </div>
-                      <button class="btn btn-accent" type="submit" style="margin-left: 1px; margin-top: -70px; height: 35px;">Sign Up</button>
-                      
-                    </div>
-                      
-                  </form>
+              </form>
                  
                 </div>
               

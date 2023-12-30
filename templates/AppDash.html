@@ -68,9 +68,7 @@
                   <span>Dashboard</span>
                 </a>
               </li>
-          
               {% endif %}
-          
               {% if user_role == 'employee' %}
               <li class="nav-item">
                 <a class="nav-link " href="{% url 'employee_dashboard' %}">
@@ -79,7 +77,6 @@
                 </a>
               </li>
               {% endif %}
-
               </li>
               {% if user_role == 'hr_admin' %}
               <li class="nav-item">
@@ -89,7 +86,6 @@
                 </a>
               </li>
               {% endif %}
-
               {% if user_role == 'hr_admin' or user_role == 'employee' %}
               <li class="nav-item">
                 <a class="nav-link " href="{% url 'Leaves' %}">
@@ -104,8 +100,6 @@
                   <span>Vacancies</span>
                 </a>
               </li>
-       
-              
               {% if user_role == 'hr_admin' %}
               <li class="nav-item">
                 <a class="nav-link " href="{% url 'ApplicationManagement' %}">
@@ -120,8 +114,6 @@
                 </a>
               </li>
               {% endif %}
-             
-              
               <li class="nav-item">
                 <a class="nav-link " href="{% url 'Report' %}">
                   <i class="material-icons">content_paste</i>
@@ -140,8 +132,6 @@
                   <span>User Profile</span>
                 </a>
               </li>
-      
-
             </ul>
           </div>
         </aside>
